@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Home"
+        android:icon="@drawable/ic_home"
+        android:id="@+id/mnuHome" />
+
+<!--    <item android:title="Ưu đãi"-->
+<!--        android:icon="@drawable/baseline_card_giftcard_24"-->
+<!--        android:id="@+id/mnu_UuDai" />-->
+
+    <item android:title="Đặt hàng"
+        android:icon="@drawable/baseline_shopping_cart_24"
+        android:id="@+id/mnuDatHang" />
+
+    <item android:title="Thông báo"
+        android:icon="@drawable/ic_notification"
+        android:id="@+id/mnuNotification" />
+
+    <item android:title="Tôi"
+        android:icon="@drawable/ic_person_orange"
+        android:id="@+id/mnuPerson" />
+</menu>

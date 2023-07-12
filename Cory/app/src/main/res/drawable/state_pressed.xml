@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@color/pressed"/>
+    <item>
+        <shape android:shape="rectangle" android:padding="10dp">
+            <solid android:color="#CCCCCC"/>
+        </shape>
+    </item>
+</selector>
