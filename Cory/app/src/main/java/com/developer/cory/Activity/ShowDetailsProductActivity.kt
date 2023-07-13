@@ -34,6 +34,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
     private lateinit var dbRef: FirebaseFirestore
     private lateinit var lsChooseSideDishes: ArrayList<String>
     private var isChooseClassify: String = ""
+    private var priceOfSize:Double = 1.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +50,13 @@ class ShowDetailsProductActivity : AppCompatActivity() {
 
     private fun initView() {
         product = intent.getSerializableExtra("product") as Product
-        binding.tvNameProduct.text = product.name
 
+        binding.tvNameProduct.text = product.name
         binding.tvDescription.text = product.description
         Glide.with(this).load(product.img_url).into(binding.imgProduct)
+        totalMoney = product.price!!
+        priceOfSize = product.price!!
+
 
         initClassify()
         initSideDishes()
@@ -60,6 +64,13 @@ class ShowDetailsProductActivity : AppCompatActivity() {
 
     //Init phân loại size
     private fun initClassify() {
+
+        binding.tvPrice.text = numbf.format(totalMoney)
+        binding.btnAddProduct.text = (resources.getString(
+            R.string.default_btn_add_to_cart,
+           numbf.format(totalMoney)
+        ))
+
         val inflater = LayoutInflater.from(this)
         val radioButtonLayout = R.layout.viewholder_classify_product
 
@@ -67,27 +78,21 @@ class ShowDetailsProductActivity : AppCompatActivity() {
         product.listSize?.forEach { (key, value) ->
             val radioButton =
                 inflater.inflate(radioButtonLayout, binding.radioGroup, false) as RadioButton
+
             radioButton.text = key
             radioButton.setOnCheckedChangeListener { buttonView, ischecked ->
                 if (ischecked) {
 
-                    isChooseClassify = buttonView.text.toString()
+                    isChooseClassify = buttonView.text.toString()   //Những sản phẩm mua thêm save firebase
 
-                    val price = product.listSize!![buttonView.text.toString()] as Double
-                    binding.tvPrice.text = numbf.format(price)
-                    totalMoney = (numberBuyProduct * price) + sumMoneyClassify
+                    priceOfSize = product.listSize!![buttonView.text.toString()] as Double
 
+                    binding.tvPrice.text = numbf.format(priceOfSize)
+                    totalMoney = (numberBuyProduct * priceOfSize) + sumMoneySideDishes
                     binding.btnAddProduct.text = (resources.getString(
                         R.string.default_btn_add_to_cart,
                         numbf.format(totalMoney)
                     ))
-
-                    binding.btnUp.setOnClickListener {
-                        UpDownNumberProduct(binding.btnUp, price)
-                    }
-                    binding.btnMinus.setOnClickListener {
-                        UpDownNumberProduct(binding.btnMinus, price)
-                    }
 
                 }
             }
@@ -99,19 +104,18 @@ class ShowDetailsProductActivity : AppCompatActivity() {
         }
     }
 
-    private var sumMoneyClassify: Double = 0.0
+    private var sumMoneySideDishes: Double = 0.0
 
     //Khởi tạo list món ăn phụ
     private fun initSideDishes() {
 
             lsChooseSideDishes = arrayListOf()
 
-
         val entries = product.sideDishes?.entries?.toList()
         val adapter = entries?.let {
             RvCheckBSideDishes(it, object : RvPriceInterface {
                 override fun onClickListener(price: Double, pos: Int) {
-                    sumMoneyClassify += price
+                    sumMoneySideDishes += price
                     totalMoney += price
                     binding.btnAddProduct.text = (resources.getString(
                         R.string.default_btn_add_to_cart,
@@ -136,9 +140,16 @@ class ShowDetailsProductActivity : AppCompatActivity() {
             isExistProductInCart()
         }
 
+        binding.btnUp.setOnClickListener {
+            UpDownNumberProduct(binding.btnUp)
+        }
+        binding.btnMinus.setOnClickListener {
+            UpDownNumberProduct(binding.btnMinus)
+        }
+
     }
 
-    private fun UpDownNumberProduct(view: View, price: Double) {
+    private fun UpDownNumberProduct(view: View) {
         if (view.id == R.id.btnUp) {
             numberBuyProduct++
         } else if (view.id == R.id.btnMinus && numberBuyProduct > 1) {
@@ -146,7 +157,8 @@ class ShowDetailsProductActivity : AppCompatActivity() {
         }
 
         binding.tvNumberBuyProduct.text = numberBuyProduct.toString()
-        totalMoney = numberBuyProduct * price
+        totalMoney  = priceOfSize * numberBuyProduct + sumMoneySideDishes
+
         binding.btnAddProduct.text =
             (resources.getString(R.string.default_btn_add_to_cart, numbf.format(totalMoney)))
 

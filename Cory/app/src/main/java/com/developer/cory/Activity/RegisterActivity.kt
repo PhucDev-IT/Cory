@@ -23,6 +23,7 @@ import androidx.core.widget.addTextChangedListener
 
 import com.developer.cory.databinding.ActivityRegisterBinding
 import com.developer.cory.Model.Account
+import com.developer.cory.Model.User
 import com.developer.cory.R
 
 import com.google.firebase.FirebaseException
@@ -344,7 +345,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.toString().trim().isEmpty()) {
+                if (s.toString().trim().isNotEmpty()) {
                     digit_2.requestFocus()
                 }
             }
@@ -358,7 +359,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.toString().trim().isEmpty()) {
+                if (s.toString().trim().isNotEmpty()) {
                     digit_3.requestFocus()
                 }
             }
@@ -372,7 +373,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.toString().trim().isEmpty()) {
+                if (s.toString().trim().isNotEmpty()) {
                     digit_4.requestFocus()
                 }
             }
@@ -386,7 +387,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.toString().trim().isEmpty()) {
+                if (s.toString().trim().isNotEmpty()) {
                     digit_5.requestFocus()
                 }
             }
@@ -400,7 +401,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.toString().trim().isEmpty()) {
+                if (s.toString().trim().isNotEmpty()) {
                     digit_6.requestFocus()
                 }
             }
@@ -422,15 +423,33 @@ class RegisterActivity : AppCompatActivity() {
 
         db.collection("account").document(numberPhone).set(account)
             .addOnCompleteListener {
-                Toast.makeText(this,"Đăng ký thành công",Toast.LENGTH_SHORT).show()
+                saveUser(numberPhone)
                 val intent = Intent(this,LoginActivity::class.java)
                 startActivity(intent)
             }
             .addOnFailureListener { err->
                 Toast.makeText(this,"Có lỗi xảy ra",Toast.LENGTH_SHORT).show()
-                Log.e(TAG, err.localizedMessage)
+                Log.e(TAG, "$err.message")
             }
 
+    }
+
+    //Lưu thông tin người dùng
+    private fun saveUser(numberPhone:String){
+        val user = User(numberPhone)
+        db.collection("Users").add(user).addOnCompleteListener {
+            Toast.makeText(this,"Đăng ký thành công",Toast.LENGTH_SHORT).show()
+        }
+            .addOnFailureListener {
+                Toast.makeText(this,"Có lỗi xảy ra",Toast.LENGTH_SHORT).show()
+                db.collection("account").document(numberPhone).delete()
+                    .addOnCompleteListener {
+                        Log.d("Success: ","Xóa account: $numberPhone")
+                    }
+                    .addOnFailureListener {  err->
+                        Log.e("Lỗi: ","Không thể xóa: ${err.message} ")
+                    }
+            }
     }
 
     @Override
