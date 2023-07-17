@@ -1,59 +1,91 @@
 package com.developer.cory.FragmentLayout
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.developer.cory.Adapter.RvItemCartAdapter
+import com.developer.cory.Interface.RvPriceInterface
+import com.developer.cory.Model.CartModel
+import com.developer.cory.Model.FormatCurrency
+import com.developer.cory.Model.Product
 import com.developer.cory.R
+import com.developer.cory.databinding.FragmentCartBinding
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CartFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CartFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+   private  lateinit var _binding:FragmentCartBinding
+    private val binding  get() = _binding
+    private lateinit var listBuyProduct:MutableList<CartModel>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cart, container, false)
+        _binding = FragmentCartBinding.inflate(inflater,container,false)
+        getData()
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CartFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CartFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private lateinit var listCart:MutableList<CartModel>
+    private var totalMoney:Double = 0.0
+    private fun getData()
+    {
+        val db = Firebase.firestore
+
+        listBuyProduct = mutableListOf()
+        listCart = mutableListOf()
+
+        db.collection("Cart").document("l3vFMy0dOKaaxHfNcnV1").collection("ItemsCart")
+            .get().addOnSuccessListener { querySnapshot  ->
+
+                for(doucment in querySnapshot.documents){
+                    var idProduct = doucment.id.trim()
+                    val cartData = doucment.data
+                    var cartM:CartModel?=null
+
+                    if(cartData!=null){
+                        val classify = cartData["classify"] as String
+                       val sideDishes = cartData["sideDishes"] as ArrayList<String>
+                       val quantity = cartData["quantity"] as Long
+                        cartM = CartModel(quantity,classify,sideDishes)
+
+                    }
+                    db.collection("Products").document(idProduct)
+                        .get().addOnSuccessListener {  documentSnapshot ->
+                            if(documentSnapshot.exists()){
+                               val product = documentSnapshot.toObject(Product::class.java)
+
+                                if (cartM != null) {
+                                    cartM.product = product
+                                    listCart.add(cartM)
+
+                                    val adapter = RvItemCartAdapter(listCart, object : RvPriceInterface{
+                                        override fun onClickListener(price: Double, pos: Int) {
+                                           
+                                            totalMoney+=price
+                                            binding.tvSumMoney.text = FormatCurrency.numberFormat.format(totalMoney)
+                                        }
+                                    })
+                                    binding.rvItemCart.adapter = adapter
+                                    binding.rvItemCart.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+                                }
+                            }else{
+                               Log.d(TAG,"Không có dữ liệu")
+                            }
+                        }.addOnFailureListener { exception ->
+                            Log.d(TAG, "Có lỗi xảy ra: ", exception)
+                        }
+
                 }
             }
     }

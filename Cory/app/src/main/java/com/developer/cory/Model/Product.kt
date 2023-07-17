@@ -4,9 +4,9 @@ import java.io.Serializable
 
 class Product : Serializable {
     private var _id: String? = null
-    val id: String?
+    var id: String?
         get() = _id
-
+        set(value) {_id  = value}
 
     private var _nameProduct: String? = null
     var name: String?
@@ -56,9 +56,8 @@ class Product : Serializable {
         this.price = price
     }
 
-
     override fun toString(): String {
-        return "Product(_id=$_id, _nameProduct=$_nameProduct, _img_url=$_img_url, _price=$_price, _description=$_description, _listSize=$_listSize, _classify=$_classify)"
+        return "Product(_id=$_id, _nameProduct=$_nameProduct, _img_url=$_img_url, _price=$_price, _description=$_description, _listSize=$_listSize, _sideDishes=$_sideDishes)"
     }
 
 

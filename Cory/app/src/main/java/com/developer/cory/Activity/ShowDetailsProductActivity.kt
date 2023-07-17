@@ -13,6 +13,7 @@ import com.developer.cory.Adapter.RvCheckBSideDishes
 import com.developer.cory.Model.Product
 import com.developer.cory.Interface.RvPriceInterface
 import com.developer.cory.Model.CartModel
+import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.R
 import com.developer.cory.databinding.ActivityShowDetailsProductBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,11 +25,10 @@ import java.util.Locale
 
 
 class ShowDetailsProductActivity : AppCompatActivity() {
-    val lc = Locale("vi", "VN")
-    val numbf = NumberFormat.getCurrencyInstance(lc)
+
 
     private lateinit var binding: ActivityShowDetailsProductBinding
-    private var numberBuyProduct: Int = 1
+    private var numberBuyProduct: Long = 1
     private lateinit var product: Product
     private var totalMoney: Double = 0.0
     private lateinit var dbRef: FirebaseFirestore
@@ -51,6 +51,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
     private fun initView() {
         product = intent.getSerializableExtra("product") as Product
 
+
         binding.tvNameProduct.text = product.name
         binding.tvDescription.text = product.description
         Glide.with(this).load(product.img_url).into(binding.imgProduct)
@@ -65,10 +66,10 @@ class ShowDetailsProductActivity : AppCompatActivity() {
     //Init phân loại size
     private fun initClassify() {
 
-        binding.tvPrice.text = numbf.format(totalMoney)
+        binding.tvPrice.text = FormatCurrency.numberFormat.format(totalMoney)
         binding.btnAddProduct.text = (resources.getString(
             R.string.default_btn_add_to_cart,
-           numbf.format(totalMoney)
+            FormatCurrency.numberFormat.format(totalMoney)
         ))
 
         val inflater = LayoutInflater.from(this)
@@ -87,11 +88,11 @@ class ShowDetailsProductActivity : AppCompatActivity() {
 
                     priceOfSize = product.listSize!![buttonView.text.toString()] as Double
 
-                    binding.tvPrice.text = numbf.format(priceOfSize)
+                    binding.tvPrice.text = FormatCurrency.numberFormat.format(priceOfSize)
                     totalMoney = (numberBuyProduct * priceOfSize) + sumMoneySideDishes
                     binding.btnAddProduct.text = (resources.getString(
                         R.string.default_btn_add_to_cart,
-                        numbf.format(totalMoney)
+                        FormatCurrency.numberFormat.format(totalMoney)
                     ))
 
                 }
@@ -119,7 +120,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
                     totalMoney += price
                     binding.btnAddProduct.text = (resources.getString(
                         R.string.default_btn_add_to_cart,
-                        numbf.format(totalMoney)
+                        FormatCurrency.numberFormat.format(totalMoney)
                     ))
                     lsChooseSideDishes.add(entries[pos].key)
                 }
@@ -160,7 +161,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
         totalMoney  = priceOfSize * numberBuyProduct + sumMoneySideDishes
 
         binding.btnAddProduct.text =
-            (resources.getString(R.string.default_btn_add_to_cart, numbf.format(totalMoney)))
+            (resources.getString(R.string.default_btn_add_to_cart, FormatCurrency.numberFormat.format(totalMoney)))
 
 
     }
@@ -168,11 +169,20 @@ class ShowDetailsProductActivity : AppCompatActivity() {
 
     //Kiểm tra sản phẩm đã tồn tại trong giỏ hàng?
     private fun isExistProductInCart() {
+        val idUser = "l3vFMy0dOKaaxHfNcnV1"
 
         val cart = CartModel(numberBuyProduct, isChooseClassify, lsChooseSideDishes)
-        dbRef.collection("Cart").document("Mv063f04SEUJxkSqPd2g").collection("ItemsCart")
-                .document("rhAm1yTrREAOkWI3NsTJ")
-            .set(cart, SetOptions.merge())
+        product.id?.let {
+            dbRef.collection("Cart").document(idUser).collection("ItemsCart")
+                .document(it)
+                .set(cart, SetOptions.merge())
+                .addOnCompleteListener {
+                    Toast.makeText(this,"Thêm thành công",Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this,"Có lỗi xảy ra",Toast.LENGTH_SHORT).show()
+                }
+        }
 
 //        val cartItem =
 //            dbRef.collection("Cart").document("Mv063f04SEUJxkSqPd2g").collection("ItemsCart")

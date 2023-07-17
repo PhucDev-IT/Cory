@@ -7,14 +7,14 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.developer.cory.Interface.RvPriceInterface
+import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.R
 import java.text.NumberFormat
 import java.util.Locale
 
 class RvCheckBSideDishes(private val list:List<Map.Entry<String,Double>>,private val onClick: RvPriceInterface)
     :RecyclerView.Adapter<RvCheckBSideDishes.viewHolder>(){
-    val lc = Locale("vi","VN")
-    val numbf = NumberFormat.getCurrencyInstance(lc)
+
     class viewHolder(itView:View):RecyclerView.ViewHolder(itView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
@@ -32,7 +32,7 @@ class RvCheckBSideDishes(private val list:List<Map.Entry<String,Double>>,private
             val tvPrice = findViewById<TextView>(R.id.tvPrice)
 
             ckbNameDishes.text = list[position].key
-            tvPrice.text = numbf.format(list[position].value)
+            tvPrice.text = FormatCurrency.numberFormat.format(list[position].value)
 
             ckbNameDishes.setOnClickListener {
               if(ckbNameDishes.isChecked){
