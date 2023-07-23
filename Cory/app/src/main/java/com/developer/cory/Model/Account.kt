@@ -6,6 +6,7 @@ class Account {
     var numberPhone:String ?= null
     var password:String?= null
     var phanQuyen:String ?= null
+    var numberXu:Int = 0
 
     constructor()
 

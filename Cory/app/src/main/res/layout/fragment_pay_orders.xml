@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".FragmentLayout.PayOrdersFragment"
     android:orientation="vertical">
 
 
@@ -30,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
-            android:text="Đăng nhập"
+            android:text="Thanh toán"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -43,10 +44,11 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/lnAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/address_background"
@@ -72,15 +74,72 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Địa chỉ nhận hàng"
+                        android:layout_gravity="center"
                         android:textSize="15sp" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_navigate_next_24"/>
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="300dp"
+                    android:id="@+id/tvNotAddress"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="45dp"
+                    android:text="Bạn chưa có địa chỉ nhận hàng"
+                    android:textSize="15sp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:textColor="@color/red"/>
 
-                    android:text="Đi một ngày đàng, lại càng cần thơm, mùa hè này chưa săn được vé đi show “Thúy Loan” " />
+                <LinearLayout
+                    android:id="@+id/lnAddressDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="10dp"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tvFullName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:text="|"
+                            android:textStyle="bold"
+                            android:textSize="15sp"/>
+
+                        <TextView
+                            android:id="@+id/tvNumberPhone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#777777"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/tvAddressDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#777777"
+                        android:textSize="14sp"/>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -154,7 +213,7 @@
                     android:id="@+id/icon_Xu"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_weight="0"
                     app:srcCompat="@drawable/icon_xu" />
 
@@ -163,16 +222,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingLeft="10dp"
+                    android:paddingStart="10dp"
                     android:text="Dùng 200 xu"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
 
                 <Switch
                     android:id="@+id/switch1"
                     android:layout_width="55dp"
                     android:layout_height="20dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_weight="0"
                     tools:ignore="UseSwitchCompatOrMaterialXml" />
             </LinearLayout>
@@ -180,7 +240,71 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:elevation="5dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/lnPayBuyMoMo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@color/white"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/momo_logo"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:text="Thanh toán bằng MOMO"/>
+                    <RadioButton
+                        android:id="@+id/rdnMomo"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnPayBuyCory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:layout_marginTop="1dp"
+                    android:background="@color/white"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/logo"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:text="Thanh toán tại bàn"/>
+                    <RadioButton
+                        android:id="@+id/rdnCory"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="15dp"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:layout_marginBottom="10dp"
                 android:background="@color/white"
                 android:elevation="8dp"
                 android:orientation="vertical"
@@ -218,12 +342,13 @@
                         android:text="Tổng tiền hàng" />
 
                     <TextView
+                        android:id="@+id/tvSumMoneyProduct"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         android:paddingRight="5dp"
-                        android:text="63.000đ" />
+                        android:text="0đ" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -244,7 +369,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:paddingRight="5dp"
-                        android:text="16.000đ" />
+                        android:text="0đ" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -265,7 +390,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:paddingRight="5dp"
-                        android:text="63.000đ" />
+                        android:text="0đ" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -286,7 +411,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:paddingRight="5dp"
-                        android:text="-63.000đ" />
+                        android:text="-0đ" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -307,7 +432,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         android:paddingRight="5dp"
-                        android:text="-63.000đ" />
+                        android:text="-0đ" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -371,7 +496,7 @@
                 android:textSize="17sp" />
 
             <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/tvTotalMoney"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="75.000đ"

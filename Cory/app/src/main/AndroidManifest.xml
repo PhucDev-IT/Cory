@@ -13,6 +13,11 @@
         android:theme="@style/Theme.Cory"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.Cory" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
@@ -22,7 +27,7 @@
             android:name=".Activity.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.Pay_Orders_Activity"
+            android:name=".Activity.Cart_Pay_Orders_Activity"
             android:exported="false" />
         <activity
             android:name=".Activity.RegisterActivity"

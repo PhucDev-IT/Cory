@@ -6,7 +6,12 @@
     </style>
 
     <style name="Theme.Cory" parent="Base.Theme.Cory" />
+
     <style name="CustomAlert" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="Widget.Design.BottomNavigationView.Active">
+        <item name="android:textColor">@color/primaryKeyColor</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>

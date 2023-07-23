@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_margin="10dp"
+    android:elevation="6dp"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:layout_width="120dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/primaryKeyColor"
+        android:layout_height="110dp">
+
+        <ImageView
+            android:id="@+id/imgVoucher"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/icon_free_ship"/>
+        <TextView
+            android:id="@+id/idVoucher"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="DHJSEGA"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvTypeVoucher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Giảm 12%"
+            android:textSize="16sp"
+            android:textStyle="bold"
+           />
+        <TextView
+            android:id="@+id/tvDescription"
+            android:textSize="14sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đơn tối thiểu 500k. Giảm tối đa 100k"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Còn lại:"/>
+            <TextView
+                android:id="@+id/tvQuantity"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="30"
+                android:textStyle="bold"
+                android:textColor="#02e80e"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvTimeUse"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:drawablePadding="7dp"
+            android:text="Thời gian:"
+            app:drawableStartCompat="@drawable/icons8_clock_20" />
+
+    </LinearLayout>
+</LinearLayout>

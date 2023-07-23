@@ -7,4 +7,5 @@
     <color name="pressed">#faecb9</color>
     <color name="primaryKeyColor">#fab234</color>
     <color name="textInputLayout">#2565cc</color>
+    <color name="shimmer_layout">#DDDD</color>
 </resources>

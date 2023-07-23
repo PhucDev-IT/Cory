@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_nav_graph"
+    app:startDestination="@id/mainSettingsFragment">
+    <fragment
+        android:id="@+id/mainSettingsFragment"
+        android:name="com.developer.cory.FragmentLayout.MainSettingsFragment"
+        android:label="fragment_main_settings"
+        tools:layout="@layout/fragment_main_settings" >
+        <action
+            android:id="@+id/action_mainSettingsFragment_to_securityAccountFragment"
+            app:destination="@id/securityAccountFragment" />
+        <action
+            android:id="@+id/action_mainSettingsFragment_to_myAddressFragment"
+            app:destination="@id/myAddressFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addressDetailsFragment"
+        android:name="com.developer.cory.modules.AddressDetailsFragment"
+        android:label="fragment_address_details"
+        tools:layout="@layout/fragment_address_details" />
+
+    <fragment
+        android:id="@+id/securityAccountFragment"
+        android:name="com.developer.cory.modules.SecurityAccountFragment"
+        android:label="fragment_security_account"
+        tools:layout="@layout/fragment_security_account" />
+    <fragment
+        android:id="@+id/myAddressFragment"
+        android:name="com.developer.cory.modules.MyAddressFragment"
+        android:label="fragment_my_address"
+        tools:layout="@layout/fragment_my_address" >
+        <action
+            android:id="@+id/action_myAddressFragment_to_addressDetailsFragment"
+            app:destination="@id/addressDetailsFragment" />
+    </fragment>
+</navigation>

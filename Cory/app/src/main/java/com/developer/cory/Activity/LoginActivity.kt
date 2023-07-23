@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.developer.cory.MainActivity
 import com.developer.cory.Model.Account
+import com.developer.cory.Model.Temp
 import com.developer.cory.databinding.ActivityLoginBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -56,8 +57,11 @@ class LoginActivity : AppCompatActivity() {
                 if (documentSnapshot.exists()) {
                     val fieldValue = documentSnapshot.getString("password")
                     if(password == fieldValue){
+
+                        Temp.account = documentSnapshot.toObject(Account::class.java)!!
+
                         val intent = Intent(this,MainActivity::class.java)
-                        intent.putExtra("phone",numberPhone)
+                        intent.putExtra("key_phone",numberPhone)
                         startActivity(intent)
                         finishAffinity()
                     }else{

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cart_pay_order_nav_graph"
+    app:startDestination="@id/cartFragment">
+
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.developer.cory.FragmentLayout.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_payOrdersFragment2"
+            app:destination="@id/payOrdersFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/payOrdersFragment2"
+        android:name="com.developer.cory.FragmentLayout.PayOrdersFragment"
+        android:label="fragment_pay_orders"
+        tools:layout="@layout/fragment_pay_orders" >
+        <action
+            android:id="@+id/action_payOrdersFragment2_to_optionAddressFragment"
+            app:destination="@id/optionAddressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/optionAddressFragment"
+        android:name="com.developer.cory.modules.OptionAddressFragment"
+        android:label="fragment_option_address"
+        tools:layout="@layout/fragment_option_address" />
+</navigation>

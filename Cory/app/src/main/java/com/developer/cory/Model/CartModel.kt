@@ -7,6 +7,7 @@ class CartModel:Serializable{
     var classify:String?=null
     var sideDishes:ArrayList<String>?=null
     var product:Product?=null
+    var totalMoney:Double = 0.0
 
     constructor(
     )

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
+    tools:context=".modules.AddressDetailsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/white"
+        android:elevation="10dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="Thêm địa chỉ mới"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liên hệ"
+        android:textSize="14sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/edtFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding= "13dp"
+        android:textSize="15sp"
+        android:layout_marginBottom="1dp"
+        android:inputType="textPersonName"
+        android:background="@color/white"
+        android:hint="Họ và tên" />
+
+    <EditText
+        android:id="@+id/edtNumberPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding= "13dp"
+        android:textSize="15sp"
+        android:inputType="text"
+        android:background="@color/white"
+        android:hint="Số điện thoại" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Địa chỉ"
+        android:textSize="14sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/edtTinhThanhPho"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding= "13dp"
+        android:textSize="15sp"
+        android:layout_marginBottom="1dp"
+        android:inputType="textPersonName"
+        android:background="@color/white"
+        android:hint="Tỉnh / Thành phố" />
+
+    <EditText
+        android:id="@+id/edtQuanHuyen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding= "13dp"
+        android:textSize="15sp"
+        android:layout_marginBottom="1dp"
+        android:inputType="textPersonName"
+        android:background="@color/white"
+        android:hint="Quận / Huyện" />
+
+    <EditText
+        android:id="@+id/edtPhuongXa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding= "13dp"
+        android:textSize="15sp"
+        android:layout_marginBottom="1dp"
+        android:inputType="textPersonName"
+        android:background="@color/white"
+        android:hint="Phường / Xã" />
+
+    <EditText
+        android:id="@+id/edtDetailsAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding= "13dp"
+        android:textSize="15sp"
+        android:inputType="text"
+        android:background="@color/white"
+        android:hint="Tên đường, Tòa nhà, Số nhà" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnHoanThanh"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/white"
+        android:background="@drawable/btn_3"
+        android:text="Hoàn thành"
+        android:textSize="19sp"/>
+
+</LinearLayout>

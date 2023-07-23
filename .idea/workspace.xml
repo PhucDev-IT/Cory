@@ -39,7 +39,9 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cidr.known.project.marker": "true",
-    "last_opened_file_path": "D:/Android_Programming/Cory/Cory"
+    "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "D:/Android_Programming/Cory",
+    "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
   <component name="RecentsManager">

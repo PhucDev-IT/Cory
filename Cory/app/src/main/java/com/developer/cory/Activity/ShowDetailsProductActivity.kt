@@ -14,6 +14,7 @@ import com.developer.cory.Model.Product
 import com.developer.cory.Interface.RvPriceInterface
 import com.developer.cory.Model.CartModel
 import com.developer.cory.Model.FormatCurrency
+import com.developer.cory.Model.Temp
 import com.developer.cory.R
 import com.developer.cory.databinding.ActivityShowDetailsProductBinding
 import com.google.firebase.firestore.FirebaseFirestore
@@ -138,7 +139,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
         }
 
         binding.btnAddProduct.setOnClickListener {
-            isExistProductInCart()
+            addProductToCart()
         }
 
         binding.btnUp.setOnClickListener {
@@ -167,13 +168,17 @@ class ShowDetailsProductActivity : AppCompatActivity() {
     }
 
 
-    //Kiểm tra sản phẩm đã tồn tại trong giỏ hàng?
-    private fun isExistProductInCart() {
-        val idUser = "l3vFMy0dOKaaxHfNcnV1"
+    //Thêm sản phẩm vào giỏ hàng
+    private fun addProductToCart() {
+        if(Temp.user==null){
 
+            return
+        }
+        val idUser = Temp.user!!.id
         val cart = CartModel(numberBuyProduct, isChooseClassify, lsChooseSideDishes)
+
         product.id?.let {
-            dbRef.collection("Cart").document(idUser).collection("ItemsCart")
+            dbRef.collection("Cart").document(idUser!!).collection("ItemsCart")
                 .document(it)
                 .set(cart, SetOptions.merge())
                 .addOnCompleteListener {
@@ -184,32 +189,6 @@ class ShowDetailsProductActivity : AppCompatActivity() {
                 }
         }
 
-//        val cartItem =
-//            dbRef.collection("Cart").document("Mv063f04SEUJxkSqPd2g").collection("ItemsCart")
-//                .document("rhAm1yTrREAOkWI3NsTJ")
-//        cartItem.get().addOnCompleteListener { taskId ->
-//            if (taskId.isSuccessful) {
-//                val doucment = taskId.result
-//                if (doucment.exists()) {
-//                    val cart = CartModel(numberBuyProduct, isChooseClassify, lsChooseSideDishes)
-//                    dbRef.collection("Cart").document("Mv063f04SEUJxkSqPd2g").collection("ItemsCart")
-//                        .document("rhAm1yTrREAOkWI3NsTJ")
-//                        .set(cart)
-//                } else {
-//                    val cart = CartModel(numberBuyProduct, isChooseClassify, lsChooseSideDishes)
-//
-//                    cartItem.set(cart)
-//                        .addOnSuccessListener {
-//                            Log.d("TAG", "Đã tạo mới document cho sản phẩm thành công")
-//                        }
-//                        .addOnFailureListener { error ->
-//                            Log.e("TAG", "Lỗi khi tạo mới document cho sản phẩm", error)
-//                        }
-//                }
-//            } else {
-//                Log.e("TAG", "Lỗi khi kiểm tra sự tồn tại của document", taskId.exception)
-//            }
-//        }
     }
 
 

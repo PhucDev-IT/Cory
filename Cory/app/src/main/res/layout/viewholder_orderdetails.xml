@@ -5,6 +5,7 @@
     android:orientation="horizontal"
     android:elevation="5dp"
     android:layout_margin="5dp"
+    android:gravity="center"
     android:background="@color/white"
     android:layout_height="wrap_content">
 
@@ -13,6 +14,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_margin="10dp"
+        android:layout_gravity="center"
         app:srcCompat="@drawable/icon_che_thap_cam" />
 
     <LinearLayout
@@ -33,12 +35,20 @@
             android:text="500gr Trái cây sâsy" />
 
         <TextView
-            android:id="@+id/textView25"
+            android:id="@+id/tvClassify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:textColor="#777777"
-            android:text="Phân loại:" />
+            android:text="@string/str_classify" />
+
+        <TextView
+            android:id="@+id/tvSideDishes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:textColor="#777777"
+            android:text="Thêm:" />
 
         <LinearLayout
             android:layout_width="match_parent"
