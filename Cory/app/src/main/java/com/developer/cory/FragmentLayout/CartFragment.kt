@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +21,7 @@ import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.Temp
 import com.developer.cory.R
 import com.developer.cory.Service.CartService
+import com.developer.cory.ViewModel.PayOrderViewModel
 import com.developer.cory.databinding.FragmentCartBinding
 
 
@@ -29,6 +32,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     private val cartService = CartService()
     private lateinit var navController: NavController
 
+    private val sharedViewModel : PayOrderViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,17 +47,16 @@ class CartFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         navController = Navigation.findNavController(view)
     }
 
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btnBuyProduct -> {
-                val bundle = Bundle()
-                bundle.putSerializable("key_listBuyProduct", listChoseCart.toTypedArray())
-                bundle.putDouble("key_totalMoney",sumMoney)
-                navController.navigate(R.id.action_cartFragment_to_payOrdersFragment2,bundle)
+
+                sharedViewModel.setListCart(listChoseCart)
+                sharedViewModel.setTotalMoney(sumMoney)
+                navController.navigate(R.id.action_cartFragment_to_payOrdersFragment2)
             }
 
         }
@@ -70,11 +73,11 @@ class CartFragment : Fragment(), View.OnClickListener {
                     override fun onClickListener(price: Double, pos: Int) {
 
                         sumMoney = 0.0
-                        for (cart: CartModel in listChoseCart) {
-                            if (cart == listCart[pos]) {
-
+                        for (i in 0 until listChoseCart.size) {
+                            if (listChoseCart[i] == listCart[pos]) {
+                                listChoseCart[i].totalMoney = price
                             }
-                            sumMoney += cart.totalMoney
+                            sumMoney += listChoseCart[i].totalMoney
                         }
                         binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
 
@@ -88,6 +91,7 @@ class CartFragment : Fragment(), View.OnClickListener {
 
                     override fun isNotChecked(pos: Int) {
                         sumMoney -= listCart[pos].totalMoney
+                        listChoseCart.remove(listCart[pos])
                         binding.tvSumMoney.text = sumMoney.toString()
                         binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
                     }

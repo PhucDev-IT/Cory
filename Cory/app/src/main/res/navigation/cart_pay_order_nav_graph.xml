@@ -18,14 +18,23 @@
         android:id="@+id/payOrdersFragment2"
         android:name="com.developer.cory.FragmentLayout.PayOrdersFragment"
         android:label="fragment_pay_orders"
-        tools:layout="@layout/fragment_pay_orders" >
+        tools:layout="@layout/fragment_pay_orders">
         <action
             android:id="@+id/action_payOrdersFragment2_to_optionAddressFragment"
-            app:destination="@id/optionAddressFragment" />
+            app:destination="@id/optionAddressFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_payOrdersFragment2_to_optionVouchersFragment"
+            app:destination="@id/optionVouchersFragment" />
     </fragment>
     <fragment
         android:id="@+id/optionAddressFragment"
         android:name="com.developer.cory.modules.OptionAddressFragment"
         android:label="fragment_option_address"
         tools:layout="@layout/fragment_option_address" />
+    <fragment
+        android:id="@+id/optionVouchersFragment"
+        android:name="com.developer.cory.modules.OptionVouchersFragment"
+        android:label="fragment_option_vouchers"
+        tools:layout="@layout/fragment_option_vouchers" />
 </navigation>

@@ -7,7 +7,6 @@
     tools:context=".FragmentLayout.PayOrdersFragment"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -183,7 +182,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/textView22"
+                    android:id="@+id/tvChooseVoucher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -229,7 +228,7 @@
                     tools:ignore="RtlSymmetry" />
 
                 <Switch
-                    android:id="@+id/switch1"
+                    android:id="@+id/switchSuDungXu"
                     android:layout_width="55dp"
                     android:layout_height="20dp"
                     android:layout_marginEnd="10dp"
@@ -298,6 +297,41 @@
                         android:layout_marginRight="15dp"
                         />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lnChooseTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:background="@color/white"
+                    android:layout_marginTop="1dp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icons8_table_30"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="30dp"
+                        android:text="Bạn đang sử dụng bàn số:"/>
+
+                    <EditText
+                        android:id="@+id/editTextNumber"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:ems="10"
+                        android:inputType="number" />
+
+
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -364,6 +398,7 @@
                         android:text="Tổng phí vận chuyển" />
 
                     <TextView
+                        android:id="@+id/tvTongPhiVanChuyen"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -385,6 +420,7 @@
                         android:text="Giảm giá phí vận chuyển" />
 
                     <TextView
+                        android:id="@+id/tvGiamGiaVanChuyen"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -406,6 +442,7 @@
                         android:text="Voucher giảm giá" />
 
                     <TextView
+                        android:id="@+id/tvVoucherGiamGia"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -427,6 +464,7 @@
                         android:text="Đã dùng xu tích lũy" />
 
                     <TextView
+                        android:id="@+id/tvSuDungXuTichLuy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -450,6 +488,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvTongTienThanhToan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -507,7 +546,7 @@
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button2"
+            android:id="@+id/btnBuyProduct"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_search_background"

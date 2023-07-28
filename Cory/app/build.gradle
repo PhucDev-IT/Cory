@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+
 }
 
 android {
@@ -28,11 +29,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
+
     }
     buildFeatures{
         viewBinding true
+    }
+
+    buildFeatures {
+        dataBinding true
     }
 }
 
@@ -73,4 +80,13 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     //noinspection GradleDependency
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    //Gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    //ViewModel
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+
+
 }

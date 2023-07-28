@@ -10,6 +10,7 @@ import com.developer.cory.Activity.LoginActivity
 import com.developer.cory.Activity.RegisterActivity
 import com.developer.cory.Activity.SettingsActivity
 import com.developer.cory.Model.Temp
+import com.developer.cory.R
 
 import com.developer.cory.databinding.FragmentUserBinding
 
@@ -38,7 +39,6 @@ class UserFragment : Fragment() {
                 binding.tvFullName.visibility = View.VISIBLE
                 binding.tvFullName.text = Temp.user!!.name
             }
-            binding.tvPhone.text = Temp.user!!.numberPhone
         }
     }
 
@@ -65,6 +65,13 @@ class UserFragment : Fragment() {
         binding.imgbtnSetting.setOnClickListener {
             val intent = Intent(context,SettingsActivity::class.java)
             startActivity(intent)
+        }
+
+        binding.lnKhoVoucher.setOnClickListener{
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.frame_layout,MyVoucherFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 }

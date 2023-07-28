@@ -17,6 +17,7 @@ class VoucherService {
                     var voucher = document.toObject(Voucher::class.java)
                     voucher.idVoucher = document.id
                     list.add(voucher)
+                    Log.d(TAG,"$voucher")
                 }
                 callback(list)
             }

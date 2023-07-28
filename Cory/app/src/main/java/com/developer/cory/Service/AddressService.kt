@@ -31,6 +31,7 @@ class AddressService() {
                 for (document in result){
                     var address:Address = document.toObject()
                     address.id = document.id
+                    address.isDefault = document.get("isDefault") as Boolean?
                     list.add(address)
                 }
                 callback(list)

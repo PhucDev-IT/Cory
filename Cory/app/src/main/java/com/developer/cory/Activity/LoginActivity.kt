@@ -36,6 +36,10 @@ class LoginActivity : AppCompatActivity() {
             hiddenKeyboard()
             existsAccount()
         }
+
+        binding.chkbSaveInfor.setOnClickListener{
+
+        }
     }
 
 
