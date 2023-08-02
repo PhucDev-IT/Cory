@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Cory"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.PurchaseHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
@@ -37,6 +40,15 @@
         <activity
             android:name=".Activity.LoginActivity"
             android:exported="false" />
+
+        <service
+            android:name=".FCM.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".Activity.SplashActivity"
             android:exported="true"

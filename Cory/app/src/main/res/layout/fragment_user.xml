@@ -198,17 +198,35 @@
                     android:padding="10dp">
 
                     <LinearLayout
+                        android:id="@+id/lnChoXacNhan"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.3"
                         android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/imgChoXacNhan"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/icon_cho_xac_nhan" />
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:id="@+id/imgChoXacNhan"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/icon_cho_xac_nhan" />
+                            <TextView
+                                android:id="@+id/tvNumberChoXacNhan"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                android:layout_marginLeft="4dp"
+                                android:textColor="@color/red"
+                                android:textSize="15sp"
+                                android:text="+1"/>
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/tvChoXacNhan"
@@ -225,12 +243,29 @@
                         android:layout_weight="0.3"
                         android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/imgDangGiao"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/icon_dang_giao_hang" />
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:id="@+id/imgDangGiaoHang"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/icon_dang_giao_hang" />
+                            <TextView
+                                android:id="@+id/tvNumberDangGiaoHang"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                android:layout_marginLeft="8dp"
+                                android:textColor="@color/red"
+                                android:textSize="15sp"
+                                android:text="+1"/>
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/tvDangGiao"

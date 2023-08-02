@@ -9,6 +9,7 @@ import com.developer.cory.Interface.RvPriceInterface
 import com.developer.cory.Model.CartModel
 import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.Product
+import com.developer.cory.Model.Temp
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -55,6 +56,23 @@ class CartService {
                 }
             }
     }
+
+
+    //xOA SẢN PHẨM SAU KHI MUA
+    fun removeCart(list: List<CartModel>) {
+        for (cartM in list) {
+            cartM.product?.id?.let {
+                Temp.user?.id?.let { it1 ->
+                    db.collection("Cart").document(it1).collection("ItemsCart").document(it)
+                        .delete()
+                        .addOnFailureListener {  e->
+                            e.message?.let { it2 -> Log.e("Không thể xóa cart: ", it2) }
+                        }
+                }
+            }
+        }
+    }
+
 
     fun updateCart(idUser: String,cart:CartModel)
     {

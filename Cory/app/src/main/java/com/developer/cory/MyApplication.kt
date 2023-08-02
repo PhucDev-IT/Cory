@@ -18,7 +18,7 @@ class MyApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        //DataLocalManager.init(applicationContext)
+        DataLocalManager.init(applicationContext)
         createNotificationChannel()
     }
 

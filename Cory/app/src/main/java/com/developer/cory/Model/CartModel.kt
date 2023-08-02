@@ -3,6 +3,7 @@ package com.developer.cory.Model
 import java.io.Serializable
 
 class CartModel:Serializable{
+    var id:String?=null
     var quantity:Long = 0
     var classify:String?=null
     var sideDishes:ArrayList<String>?=null

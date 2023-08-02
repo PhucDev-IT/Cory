@@ -1,5 +1,6 @@
 package com.developer.cory.FragmentLayout
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,15 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.developer.cory.Activity.LoginActivity
+import com.developer.cory.Activity.PurchaseHistoryActivity
 import com.developer.cory.Activity.RegisterActivity
 import com.developer.cory.Activity.SettingsActivity
 import com.developer.cory.Model.Temp
 import com.developer.cory.R
 
 import com.developer.cory.databinding.FragmentUserBinding
+import com.developer.cory.modules.ChoXacNhanFragment
 
-class UserFragment : Fragment() {
-    private  var _binding: FragmentUserBinding?=null
+class UserFragment : Fragment(),View.OnClickListener {
+    private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -23,19 +26,19 @@ class UserFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentUserBinding.inflate(inflater,container,false)
+        _binding = FragmentUserBinding.inflate(inflater, container, false)
 
         onClick()
         init()
         return binding.root
     }
 
-    private fun init(){
-        if(Temp.user!=null){
+    private fun init() {
+        if (Temp.user != null) {
             binding.lnAuth.visibility = View.GONE
             binding.lnProfileUser.visibility = View.VISIBLE
 
-            if(Temp.user!!.name!=null) {
+            if (Temp.user!!.name != null) {
                 binding.tvFullName.visibility = View.VISIBLE
                 binding.tvFullName.text = Temp.user!!.name
             }
@@ -43,35 +46,55 @@ class UserFragment : Fragment() {
     }
 
 
-
-    fun onClick(){
+    fun onClick() {
 
         binding.lnThietLapTaiKhoan.setOnClickListener {
-            val intent = Intent(context,SettingsActivity::class.java)
+            val intent = Intent(context, SettingsActivity::class.java)
             startActivity(intent)
         }
 
-        binding.btnLogin.setOnClickListener(){
+        binding.btnLogin.setOnClickListener() {
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
 
         }
 
-        binding.btnResgister.setOnClickListener(){
+        binding.btnResgister.setOnClickListener() {
             val intent = Intent(requireContext(), RegisterActivity::class.java)
             startActivity(intent)
         }
 
         binding.imgbtnSetting.setOnClickListener {
-            val intent = Intent(context,SettingsActivity::class.java)
+            val intent = Intent(context, SettingsActivity::class.java)
             startActivity(intent)
         }
 
         binding.lnKhoVoucher.setOnClickListener{
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.frame_layout,MyVoucherFragment())
-                .addToBackStack(null)
-                .commit()
+            val intent = Intent(context,PurchaseHistoryActivity::class.java)
+            startActivity(intent)
+        }
+        binding.lnChoXacNhan.setOnClickListener(this)
+    }
+
+    @SuppressLint("CommitTransaction")
+    fun convertScreen(view: View) {
+
+        val screen = requireActivity().supportFragmentManager.beginTransaction()
+
+        when (view) {
+            binding.lnKhoVoucher -> {
+                screen.replace(R.id.frame_layout, MyVoucherFragment())
+
+            }
+        }
+
+        screen.addToBackStack(null)
+            .commit()
+    }
+
+    override fun onClick(view: View?) {
+        if (view != null) {
+            convertScreen(view)
         }
     }
 }

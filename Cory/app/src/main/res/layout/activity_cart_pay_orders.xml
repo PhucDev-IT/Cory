@@ -7,7 +7,6 @@
     tools:context=".Activity.Cart_Pay_Orders_Activity"
     android:orientation="vertical">
 
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"

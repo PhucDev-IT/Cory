@@ -1,7 +1,9 @@
 package com.developer.cory.data_local
 
+
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 
 class MySharedPreferences(private val mContext:Context) {
     companion object{
@@ -17,6 +19,7 @@ class MySharedPreferences(private val mContext:Context) {
     }
 
     fun getStringValues(key:String): String? {
+
         val sharedPreferences:SharedPreferences = mContext.getSharedPreferences(
             MY_SHARED_PREFERENCES,Context.MODE_PRIVATE)
         return sharedPreferences.getString(key,null)

@@ -40,6 +40,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
+        sharedViewModel.reset()
         getData()
         binding.btnBuyProduct.setOnClickListener(this)
         return binding.root
@@ -53,22 +54,38 @@ class CartFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (p0?.id) {
             R.id.btnBuyProduct -> {
-
-                sharedViewModel.setListCart(listChoseCart)
-                sharedViewModel.setTotalMoney(sumMoney)
-                navController.navigate(R.id.action_cartFragment_to_payOrdersFragment2)
+                if(listChoseCart.size>0){
+                    sharedViewModel.setListCart(listChoseCart)
+                    sharedViewModel.setTotalMoney(sumMoney)
+                    navController.navigate(R.id.action_cartFragment_to_payOrdersFragment2)
+                }else{
+                    Toast.makeText(context,"Chọn sản phẩm cần mua bạn nhé!",Toast.LENGTH_SHORT).show()
+                }
             }
 
         }
     }
 
 
-    private var sumMoney: Double = 0.0
+    private  var sumMoney:Double = 0.0
     private fun getData() {
+
+        binding.lnIsLoading.visibility = View.VISIBLE
+
+        sumMoney = 0.0  //Khi back lại nó bị lưu value cũ nên cần reset
+
         Toast.makeText(context, "${Temp.user?.id}", Toast.LENGTH_SHORT).show()
         listChoseCart = mutableListOf()
         Temp.user?.id?.let {
             cartService.selectCartByID(it) { listCart ->
+
+                if(listCart.isEmpty()){
+                    binding.lnIsLoading.visibility = View.GONE
+                    binding.lnDefaultCart.visibility = View.VISIBLE
+
+                    return@selectCartByID
+                }
+
                 val adapter = RvItemCartAdapter(listCart, object : RvPriceInterface {
                     override fun onClickListener(price: Double, pos: Int) {
 

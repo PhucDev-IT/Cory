@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.developer.cory.MainActivity
 import com.developer.cory.Model.Account
 import com.developer.cory.Model.Temp
+import com.developer.cory.data_local.DataLocalManager
 import com.developer.cory.databinding.ActivityLoginBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -24,6 +25,15 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         addEvents()
+        initView()
+    }
+
+    private fun initView(){
+        val account = DataLocalManager.getAccount()
+        if (account != null) {
+            binding.edtNumberPhone.setText(account.numberPhone)
+            binding.edtPassword.setText(account.password)
+        }
     }
 
     private fun addEvents() {
@@ -35,6 +45,13 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.setOnClickListener {
             hiddenKeyboard()
             existsAccount()
+
+            if(binding.chkbSaveInfor.isChecked){
+                val account = Account()
+                account.numberPhone = "0374164756"
+                account.password = "123456"
+                DataLocalManager.setAccount(account)
+            }
         }
 
         binding.chkbSaveInfor.setOnClickListener{

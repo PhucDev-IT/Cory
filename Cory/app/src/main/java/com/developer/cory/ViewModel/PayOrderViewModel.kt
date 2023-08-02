@@ -31,8 +31,8 @@ class PayOrderViewModel : ViewModel() {
     private val _mAddress = MutableLiveData<Address>()
     val mAddress: LiveData<Address> = _mAddress
 
-    private val _totalMoney = MutableLiveData<Double>()
-    val totalMoney: LiveData<Double> = _totalMoney
+    private val _tongTienSanPham = MutableLiveData<Double>()
+    val tongTienSanPham: LiveData<Double> = _tongTienSanPham
 
     private val _tongPhiVanChuyen = MutableLiveData(0.0)
     val tongPhiVanChuyen: LiveData<Double> = _tongPhiVanChuyen
@@ -50,7 +50,8 @@ class PayOrderViewModel : ViewModel() {
     val tongThanhToan: LiveData<Double> = _tongThanhToan
 
     fun setTotalMoney(value: Double) {
-        _totalMoney.value = value
+        _tongTienSanPham.value = value
+        tinhTongTienThanhToan()
     }
 
     fun setListCart(list: List<CartModel>) {
@@ -77,13 +78,18 @@ class PayOrderViewModel : ViewModel() {
         _giamGiaXu.value = giamXu
     }
 
-    private fun reset() {
+     fun reset() {
         _listCart.value = emptyList()
-        _totalMoney.value = 0.0
+        _tongTienSanPham.value = 0.0
+        _giamGiaXu.value = 0
+        _giamGiaVanChuyen.value = 0.0
+        _voucherGiamGia.value = 0.0
+        _tongThanhToan.value = 0.0
+        _tongPhiVanChuyen.value = 0.0
     }
 
     fun tinhTongTienThanhToan() {
-        _tongThanhToan.value = (totalMoney.value?.plus(tongPhiVanChuyen.value!!)
+        _tongThanhToan.value = (tongTienSanPham.value?.plus(tongPhiVanChuyen.value!!)
             ?: 0.0) + giamGiaVanChuyen.value!! + voucherGiamGia.value!! + giamGiaXu.value!!
     }
 
@@ -98,7 +104,7 @@ class PayOrderViewModel : ViewModel() {
             _voucherGiamGia.value = voucher.reduce.unaryMinus()
 
         } else {
-            _voucherGiamGia.value = tongThanhToan.value
+            _voucherGiamGia.value = _voucherGiamGia.value!! * voucher.reduce
         }
 
         tinhTongTienThanhToan()

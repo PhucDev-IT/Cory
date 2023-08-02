@@ -1,9 +1,8 @@
 package com.developer.cory.FragmentLayout
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.os.Bundle
-import android.os.DeadObjectException
+
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,31 +10,32 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.navArgs
-import androidx.navigation.navArgument
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Adapter.RvOrdersAdapter
-import com.developer.cory.Interface.onAddressListener
-import com.developer.cory.Model.Address
-import com.developer.cory.Model.CartModel
+
 import com.developer.cory.Model.FormatCurrency
+import com.developer.cory.Model.Order
 import com.developer.cory.Model.Temp
 import com.developer.cory.Model.pushNotification
 import com.developer.cory.R
 import com.developer.cory.Service.AddressService
+import com.developer.cory.Service.CartService
 import com.developer.cory.ViewModel.PayOrderViewModel
-import com.developer.cory.ViewModel.SharedDataViewModel
 import com.developer.cory.databinding.FragmentPayOrdersBinding
-import com.developer.cory.modules.OptionAddressFragment
+import com.developer.cory.modules.ChoXacNhanFragment
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class PayOrdersFragment : Fragment() {
 
     private val PHI_VAN_CHUYEN: Double = 15300.0
+    private val THANH_TOAN_TAI_BAN: String = "Thanh toán tại bàn"
+    private val THANH_TOAN_MOMO: String = "Thanh toán bằng Momo"
 
     private lateinit var _binding: FragmentPayOrdersBinding
     private val binding get() = _binding
@@ -44,6 +44,7 @@ class PayOrdersFragment : Fragment() {
     private lateinit var navController: NavController
     private val sharedViewModel: PayOrderViewModel by activityViewModels()
 
+    private lateinit var dbRef: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,7 +108,7 @@ class PayOrdersFragment : Fragment() {
             binding.tvTongTienThanhToan.text = FormatCurrency.numberFormat.format(values)
         }
 
-        sharedViewModel.totalMoney.observe(viewLifecycleOwner) { values ->
+        sharedViewModel.tongTienSanPham.observe(viewLifecycleOwner) { values ->
             binding.tvSumMoneyProduct.text = FormatCurrency.numberFormat.format(values)
         }
 
@@ -133,23 +134,23 @@ class PayOrdersFragment : Fragment() {
     private fun handleEvent() {
 
         binding.lnPayBuyMoMo.setOnClickListener {
-            xuLyThanhToan(binding.lnPayBuyMoMo)
+            xuLyPhuongThucThanhToan(binding.lnPayBuyMoMo)
         }
 
         binding.rdnMomo.setOnClickListener {
-            xuLyThanhToan(binding.rdnMomo)
+            xuLyPhuongThucThanhToan(binding.rdnMomo)
         }
 
         binding.lnPayBuyCory.setOnClickListener {
-            xuLyThanhToan(binding.lnPayBuyCory)
+            xuLyPhuongThucThanhToan(binding.lnPayBuyCory)
         }
 
         binding.rdnCory.setOnClickListener {
-            xuLyThanhToan(binding.rdnCory)
+            xuLyPhuongThucThanhToan(binding.rdnCory)
         }
 
         binding.switchSuDungXu.setOnClickListener {
-            xuLyThanhToan(binding.switchSuDungXu)
+            xuLyPhuongThucThanhToan(binding.switchSuDungXu)
         }
 
         binding.lnAddress.setOnClickListener {
@@ -163,12 +164,15 @@ class PayOrdersFragment : Fragment() {
         }
 
         binding.btnBuyProduct.setOnClickListener {
-            context?.let { it1 -> pushNotification().sendNotification(it1) }
+
+            dbRef = FirebaseDatabase.getInstance().getReference("Orders")
+            xuLyThanhToanHoaDon()
+
         }
     }
 
     //Xử lý phương thức thanh toán
-    private fun xuLyThanhToan(view: View) {
+    private fun xuLyPhuongThucThanhToan(view: View) {
         when (view) {
             binding.lnPayBuyMoMo, binding.rdnMomo -> {
                 binding.rdnMomo.isChecked = true
@@ -199,6 +203,71 @@ class PayOrdersFragment : Fragment() {
         }
 
         sharedViewModel.tinhTongTienThanhToan()
+    }
+
+    fun xuLyThanhToanHoaDon() {
+
+        if (sharedViewModel.mAddress.value == null) {
+            Toast.makeText(context, "Bạn chưa có địa chỉ nhận hàng", Toast.LENGTH_SHORT).show()
+            return
+        } else if (!binding.rdnCory.isChecked && !binding.rdnMomo.isChecked) {
+            Toast.makeText(context, "Vui lòng chọn phương thức thanh toán", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        if (binding.rdnCory.isChecked) {
+            xuLyThanhToan(THANH_TOAN_TAI_BAN)
+        } else if (binding.rdnMomo.isChecked) {
+            xuLyThanhToan(THANH_TOAN_MOMO)
+        }
+    }
+
+    //Thanh toán tại bàn
+    fun xuLyThanhToan(phuongThucThanhToan: String) {
+
+        var order: Order = Order()
+        order.phuongThucThanhToan = phuongThucThanhToan
+        order.listCart = sharedViewModel.listCart.value
+        order.mAddress = sharedViewModel.mAddress.value
+        order.tongPhiVanChuyen = sharedViewModel.tongPhiVanChuyen.value
+        order.tongTienSanPham = sharedViewModel.tongTienSanPham.value
+        order.usedXu = sharedViewModel.giamGiaXu.value
+        order.voucher = sharedViewModel.voucher.value
+        order.status = "Chờ xác nhận"
+
+        var id = dbRef.push().key!!
+        order.idOrder = id
+
+        Temp.user?.id?.let {
+            dbRef.child(it).child(id).setValue(order)
+                .addOnCompleteListener {
+                    context?.let { it1 ->
+                        pushNotification().sendNotification(
+                            it1,
+                            "Đặt hàng thành công",
+                            "Bạn vừa đặt ${order.listCart?.size} sản phẩm chỉ với ${
+                                FormatCurrency.numberFormat.format(
+                                    sharedViewModel.tongThanhToan.value
+                                )
+                            }"
+                        )
+                    }
+
+                    sharedViewModel.listCart.value?.let { it1 -> CartService().removeCart(it1) }
+
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.frame_layout,ChoXacNhanFragment())
+                        .commit()
+                    val activity = activity
+                    activity?.finishAffinity()
+
+                }
+                .addOnFailureListener { err ->
+                    Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
+                    Log.e("Lỗi thanh toán: ", err.localizedMessage)
+                }
+        }
     }
 
 

@@ -56,11 +56,7 @@ class Address : Serializable {
     private var _isDefault: Boolean = false
     var isDefault: Boolean?
         get() = _isDefault
-        set(value) {
-            if (value != null) {
-                _isDefault = value
-            }
-        }
+        set(value) {_isDefault = value?:false}
 
     constructor()
 
