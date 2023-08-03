@@ -70,53 +70,51 @@ class CartFragment : Fragment(), View.OnClickListener {
     private  var sumMoney:Double = 0.0
     private fun getData() {
 
-        binding.lnIsLoading.visibility = View.VISIBLE
+      //  binding.lnIsLoading.visibility = View.VISIBLE
 
         sumMoney = 0.0  //Khi back lại nó bị lưu value cũ nên cần reset
 
-        Toast.makeText(context, "${Temp.user?.id}", Toast.LENGTH_SHORT).show()
         listChoseCart = mutableListOf()
         Temp.user?.id?.let {
             cartService.selectCartByID(it) { listCart ->
-
-                if(listCart.isEmpty()){
-                    binding.lnIsLoading.visibility = View.GONE
+               // binding.lnIsLoading.visibility = View.GONE
+                if (listCart.size<=0) {
                     binding.lnDefaultCart.visibility = View.VISIBLE
 
-                    return@selectCartByID
-                }
+                } else {
 
-                val adapter = RvItemCartAdapter(listCart, object : RvPriceInterface {
-                    override fun onClickListener(price: Double, pos: Int) {
+                    val adapter = RvItemCartAdapter(listCart, object : RvPriceInterface {
+                        override fun onClickListener(price: Double, pos: Int) {
 
-                        sumMoney = 0.0
-                        for (i in 0 until listChoseCart.size) {
-                            if (listChoseCart[i] == listCart[pos]) {
-                                listChoseCart[i].totalMoney = price
+                            sumMoney = 0.0
+                            for (i in 0 until listChoseCart.size) {
+                                if (listChoseCart[i] == listCart[pos]) {
+                                    listChoseCart[i].totalMoney = price
+                                }
+                                sumMoney += listChoseCart[i].totalMoney
                             }
-                            sumMoney += listChoseCart[i].totalMoney
+                            binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
+
                         }
-                        binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
+                    }, object : CheckboxInterface {
+                        override fun isChecked(pos: Int) {
+                            listChoseCart.add(listCart[pos])
+                            sumMoney += listCart[pos].totalMoney
+                            binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
+                        }
 
+                        override fun isNotChecked(pos: Int) {
+                            sumMoney -= listCart[pos].totalMoney
+                            listChoseCart.remove(listCart[pos])
+                            binding.tvSumMoney.text = sumMoney.toString()
+                            binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
+                        }
                     }
-                }, object : CheckboxInterface {
-                    override fun isChecked(pos: Int) {
-                        listChoseCart.add(listCart[pos])
-                        sumMoney += listCart[pos].totalMoney
-                        binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
-                    }
-
-                    override fun isNotChecked(pos: Int) {
-                        sumMoney -= listCart[pos].totalMoney
-                        listChoseCart.remove(listCart[pos])
-                        binding.tvSumMoney.text = sumMoney.toString()
-                        binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
-                    }
+                    )
+                    binding.rvItemCart.adapter = adapter
+                    binding.rvItemCart.layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 }
-                )
-                binding.rvItemCart.adapter = adapter
-                binding.rvItemCart.layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             }
         }
     }

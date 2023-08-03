@@ -33,8 +33,24 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
+        app:tabIndicatorColor="@color/primaryKeyColor"
+        app:tabSelectedTextColor="@color/primaryKeyColor"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chờ xác nhận"/>
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đang giao hàng"/>
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đơn đã mua"/>
+
+    </com.google.android.material.tabs.TabLayout>
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager2"
         android:layout_width="match_parent"

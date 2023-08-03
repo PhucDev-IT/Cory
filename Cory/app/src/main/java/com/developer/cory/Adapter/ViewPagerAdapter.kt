@@ -15,7 +15,7 @@ class ViewPagerAdapter : FragmentStateAdapter {
 
 
     override fun getItemCount(): Int {
-        return 3
+        return 100
     }
 
     override fun createFragment(position: Int): Fragment {

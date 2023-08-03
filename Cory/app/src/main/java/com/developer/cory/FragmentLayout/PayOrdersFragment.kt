@@ -1,6 +1,7 @@
 package com.developer.cory.FragmentLayout
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 
 import android.util.Log
@@ -15,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.developer.cory.Activity.PurchaseHistoryActivity
 import com.developer.cory.Adapter.RvOrdersAdapter
 
 import com.developer.cory.Model.FormatCurrency
@@ -29,6 +31,8 @@ import com.developer.cory.databinding.FragmentPayOrdersBinding
 import com.developer.cory.modules.ChoXacNhanFragment
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import java.time.Instant
+import java.util.Date
 
 
 class PayOrdersFragment : Fragment() {
@@ -234,6 +238,7 @@ class PayOrdersFragment : Fragment() {
         order.tongTienSanPham = sharedViewModel.tongTienSanPham.value
         order.usedXu = sharedViewModel.giamGiaXu.value
         order.voucher = sharedViewModel.voucher.value
+        order.orderDate = Date()
         order.status = "Chờ xác nhận"
 
         var id = dbRef.push().key!!
@@ -256,11 +261,10 @@ class PayOrdersFragment : Fragment() {
 
                     sharedViewModel.listCart.value?.let { it1 -> CartService().removeCart(it1) }
 
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.frame_layout,ChoXacNhanFragment())
-                        .commit()
-                    val activity = activity
-                    activity?.finishAffinity()
+                    val intent = Intent(context, PurchaseHistoryActivity::class.java)
+                    intent.putExtra("key_tab","Chờ xác nhận")
+                    startActivity(intent)
+                    activity?.finish()
 
                 }
                 .addOnFailureListener { err ->

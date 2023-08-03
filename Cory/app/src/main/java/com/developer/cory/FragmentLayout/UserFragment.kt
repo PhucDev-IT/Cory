@@ -70,26 +70,38 @@ class UserFragment : Fragment(),View.OnClickListener {
         }
 
         binding.lnKhoVoucher.setOnClickListener{
-            val intent = Intent(context,PurchaseHistoryActivity::class.java)
-            startActivity(intent)
+
         }
+
+        binding.lnLichSuMuaHang.setOnClickListener(this)
+
         binding.lnChoXacNhan.setOnClickListener(this)
+        binding.lnDangGiao.setOnClickListener(this)
     }
 
     @SuppressLint("CommitTransaction")
     fun convertScreen(view: View) {
 
-        val screen = requireActivity().supportFragmentManager.beginTransaction()
-
         when (view) {
-            binding.lnKhoVoucher -> {
-                screen.replace(R.id.frame_layout, MyVoucherFragment())
+            binding.lnLichSuMuaHang -> {
+                val intent = Intent(context,PurchaseHistoryActivity::class.java)
+                intent.putExtra("key_tab","Đơn mua")
+                startActivity(intent)
+            }
 
+            binding.lnChoXacNhan ->{
+                val intent = Intent(context,PurchaseHistoryActivity::class.java)
+                intent.putExtra("key_tab","Chờ xác nhận")
+                startActivity(intent)
+            }
+
+            binding.lnDangGiao ->{
+                val intent = Intent(context,PurchaseHistoryActivity::class.java)
+                intent.putExtra("key_tab","Đang giao")
+                startActivity(intent)
             }
         }
 
-        screen.addToBackStack(null)
-            .commit()
     }
 
     override fun onClick(view: View?) {

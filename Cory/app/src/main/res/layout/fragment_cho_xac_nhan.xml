@@ -16,6 +16,7 @@
           android:layout_height="match_parent"
           android:background="@color/background"
           android:gravity="center"
+          android:visibility="gone"
           android:orientation="vertical">
           <ImageView
               android:layout_width="100dp"
@@ -31,6 +32,12 @@
               android:textSize="20sp"
               android:background="@drawable/btn_logout"/>
       </LinearLayout>
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rvOrders"
+          android:background="@color/background"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
 
   </LinearLayout>
 </FrameLayout>
