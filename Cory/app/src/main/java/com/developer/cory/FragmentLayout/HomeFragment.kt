@@ -66,8 +66,9 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
 
-    private fun getDataProduct():Long {
+    private fun getDataProduct() {
         productService.selectData{ listProduct->
+
             val adapter = RvProductApdapter(listProduct, object : RvInterface {
                 override fun onClickListener(pos: Int) {
                     val intent = Intent(context, ShowDetailsProductActivity::class.java)
@@ -82,7 +83,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 LinearLayoutManager.HORIZONTAL, false
             )
         }
-        return 1000;
+
     }
 
 
@@ -103,7 +104,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                   val intent = Intent(context, SearchActivity::class.java)
                   intent.putExtra("idCategory", listCategory[pos].id)
                   intent.putExtra("pos", pos)
-
+                  intent.putExtra("listCate",listCategory.toTypedArray())
                   startActivity(intent)
               }
           })
@@ -114,7 +115,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-
+        getDataProduct()
     }
 
 }

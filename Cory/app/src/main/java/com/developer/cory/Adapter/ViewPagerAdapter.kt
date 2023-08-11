@@ -1,14 +1,11 @@
 package com.developer.cory.Adapter
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout.AttachedBehavior
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.developer.cory.FragmentLayout.DangGiaoHangFragment
 import com.developer.cory.FragmentLayout.LichSuMuaHangFragment
-import com.developer.cory.modules.ChoXacNhanFragment
+import com.developer.cory.FragmentLayout.ChoXacNhanFragment
 
 class ViewPagerAdapter : FragmentStateAdapter {
     constructor(fragmentActivity: FragmentActivity) : super(fragmentActivity)

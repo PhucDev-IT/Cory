@@ -28,7 +28,10 @@ class RvItemCartAdapter(private var list: List<CartModel>, private val onClick: 
 private val onCheckbox:CheckboxInterface) :
     RecyclerView.Adapter<RvItemCartAdapter.viewHolder>() {
 
-    private val cartService = CartService()
+    fun setData(list:List<CartModel>){
+        this.list = list
+        notifyDataSetChanged()
+    }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tvNameProduct: TextView

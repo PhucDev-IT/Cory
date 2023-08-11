@@ -1,30 +1,20 @@
 package com.developer.cory.modules
 
-import android.content.ContentValues.TAG
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Adapter.RvOptionAddressAdapter
-import com.developer.cory.FragmentLayout.PayOrdersFragment
 import com.developer.cory.Interface.RvInterface
-import com.developer.cory.Interface.onAddressListener
 import com.developer.cory.Model.Address
 import com.developer.cory.Model.Temp
-import com.developer.cory.R
 import com.developer.cory.Service.AddressService
 import com.developer.cory.ViewModel.PayOrderViewModel
-import com.developer.cory.ViewModel.SharedDataViewModel
 import com.developer.cory.databinding.FragmentOptionAddressBinding
 
 

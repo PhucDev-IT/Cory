@@ -1,10 +1,12 @@
 package com.developer.cory.Model
 
-import com.google.firebase.Timestamp
+
+
+import java.io.Serializable
 import java.util.Date
 
 
-class Order{
+class Order() : Serializable{
 
     private var _idOrder:String?=null
     var idOrder:String?
@@ -51,14 +53,11 @@ class Order{
         get() = _status
         set(value) {_status = value?:"Chờ xác nhận"}
 
-    private var _orderDate:Date?=null
+    private var _orderDate: Date?=null
     var orderDate:Date?
         get() = _orderDate
         set(value) {_orderDate = value}
 
-
-
-    constructor()
 
     override fun toString(): String {
         return "Order(_idOrder=$_idOrder, _voucher=$_voucher, _listCart=$_listCart, _usedXu=$_usedXu, _tongPhiVanChuyen=$_tongPhiVanChuyen, _mAddress=$_mAddress, _tongTienSanPham=$_tongTienSanPham, _phuongThucThanhToan=$_phuongThucThanhToan, _status='$_status', _orderDate=$_orderDate)"

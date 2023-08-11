@@ -11,8 +11,14 @@ import com.developer.cory.Interface.RvInterface
 import com.developer.cory.R
 
 
-class RvProductInSearchApdapter(private val list:List<Product>, private val onClick: RvInterface):RecyclerView.Adapter<RvProductInSearchApdapter.viewHolder>() {
+class RvProductInSearchApdapter(private var list:List<Product>, private val onClick: RvInterface):RecyclerView.Adapter<RvProductInSearchApdapter.viewHolder>() {
     class viewHolder(itemView:View):RecyclerView.ViewHolder(itemView)
+
+
+    fun setData(list: List<Product>){
+        this.list = list
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.viewholder_product_search,parent,false)

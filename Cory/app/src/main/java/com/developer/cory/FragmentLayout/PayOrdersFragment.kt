@@ -18,6 +18,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Activity.PurchaseHistoryActivity
 import com.developer.cory.Adapter.RvOrdersAdapter
+import com.developer.cory.Model.EnumOrder
 
 import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.Order
@@ -28,10 +29,9 @@ import com.developer.cory.Service.AddressService
 import com.developer.cory.Service.CartService
 import com.developer.cory.ViewModel.PayOrderViewModel
 import com.developer.cory.databinding.FragmentPayOrdersBinding
-import com.developer.cory.modules.ChoXacNhanFragment
+import com.google.firebase.Timestamp
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import java.time.Instant
 import java.util.Date
 
 
@@ -73,7 +73,7 @@ class PayOrdersFragment : Fragment() {
     private fun init() {
         initAddress()
 
-        sharedViewModel.listCart.observe(viewLifecycleOwner) { listCart ->
+        sharedViewModel.listCartSelected.observe(viewLifecycleOwner) { listCart ->
             val adapter = RvOrdersAdapter(listCart.toList())
             binding.rvOrders.adapter = adapter
             binding.rvOrders.layoutManager = LinearLayoutManager(
@@ -84,7 +84,7 @@ class PayOrdersFragment : Fragment() {
 
         observeData()
 
-        binding.tvXu.text = "Dùng ${Temp.account.numberXu} xu"
+        binding.tvXu.text = "Dùng ${Temp.account?.numberXu} xu"
     }
 
     fun observeData() {
@@ -182,7 +182,6 @@ class PayOrdersFragment : Fragment() {
                 binding.rdnMomo.isChecked = true
                 binding.rdnCory.isChecked = false
                 sharedViewModel.setTongPhiVanChuyen(PHI_VAN_CHUYEN)
-
                 binding.lnChooseTable.visibility = View.GONE
 
             }
@@ -199,7 +198,7 @@ class PayOrdersFragment : Fragment() {
             binding.switchSuDungXu -> {
 
                 if (binding.switchSuDungXu.isChecked) {
-                    sharedViewModel.setGiamGiaXu(Temp.account.numberXu.unaryMinus())
+                    Temp.account?.numberXu?.let { sharedViewModel.setGiamGiaXu(it.unaryMinus()) }
                 } else {
                     sharedViewModel.setGiamGiaXu(0)
                 }
@@ -232,14 +231,14 @@ class PayOrdersFragment : Fragment() {
 
         var order: Order = Order()
         order.phuongThucThanhToan = phuongThucThanhToan
-        order.listCart = sharedViewModel.listCart.value
+        order.listCart = sharedViewModel.listCartSelected.value
         order.mAddress = sharedViewModel.mAddress.value
         order.tongPhiVanChuyen = sharedViewModel.tongPhiVanChuyen.value
         order.tongTienSanPham = sharedViewModel.tongTienSanPham.value
         order.usedXu = sharedViewModel.giamGiaXu.value
         order.voucher = sharedViewModel.voucher.value
         order.orderDate = Date()
-        order.status = "Chờ xác nhận"
+        order.status = EnumOrder.CHOXACNHAN.name
 
         var id = dbRef.push().key!!
         order.idOrder = id
@@ -259,7 +258,7 @@ class PayOrdersFragment : Fragment() {
                         )
                     }
 
-                    sharedViewModel.listCart.value?.let { it1 -> CartService().removeCart(it1) }
+                    sharedViewModel.listCartSelected.value?.let { it1 -> CartService().removeCart(it1) }
 
                     val intent = Intent(context, PurchaseHistoryActivity::class.java)
                     intent.putExtra("key_tab","Chờ xác nhận")

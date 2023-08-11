@@ -4,40 +4,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".modules.ChoXacNhanFragment">
+    android:background="@color/background"
+    tools:context=".FragmentLayout.ChoXacNhanFragment">
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:background="@color/background"
-          android:gravity="center"
-          android:visibility="gone"
-          android:orientation="vertical">
-          <ImageView
-              android:layout_width="100dp"
-              android:layout_height="100dp"
-              android:scaleType="centerCrop"
-              android:src="@drawable/icon_cho_xac_nhan"/>
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Chưa có đơn hàng"
-              android:layout_marginTop="10dp"
-              android:padding="5dp"
-              android:textSize="20sp"
-              android:background="@drawable/btn_logout"/>
-      </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/background"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_cho_xac_nhan"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chưa có đơn hàng"
+                    android:layout_marginTop="10dp"
+                    android:padding="5dp"
+                    android:textSize="20sp"
+                    android:background="@drawable/btn_logout"/>
+            </LinearLayout>
 
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/rvOrders"
-          android:background="@color/background"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvOrders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-  </LinearLayout>
+            <ProgressBar
+                android:id="@+id/progressBarLoading"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </FrameLayout>

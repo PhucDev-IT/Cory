@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.developer.cory.Adapter.ViewPagerAdapter
+import com.developer.cory.Model.EnumOrder
 import com.developer.cory.R
 import com.developer.cory.databinding.ActivityPurchaseHistoryBinding
 import com.developer.cory.databinding.FragmentAddressDetailsBinding
@@ -50,9 +51,9 @@ class PurchaseHistoryActivity : AppCompatActivity() {
         val tab = intent.getStringExtra("key_tab")
 
         when(tab){
-            "Chờ xác nhận" -> binding.viewPager2.currentItem = 0
-            "Đang giao" -> binding.viewPager2.currentItem = 1
-            "Đơn mua" -> binding.viewPager2.currentItem = 2
+            EnumOrder.CHOXACNHAN.name -> binding.viewPager2.currentItem = 0
+            EnumOrder.DANGGIAOHANG.name -> binding.viewPager2.currentItem = 1
+            EnumOrder.GIAOHANGTHANHCONG.name -> binding.viewPager2.currentItem = 2
             else -> binding.viewPager2.currentItem = 0
         }
     }

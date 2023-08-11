@@ -50,6 +50,11 @@ class Product : Serializable {
         get() = _sideDishes
         set(value) {_sideDishes = value}
 
+    private var _idCategory:String?=null
+    var idCategory:String?
+        get() = _idCategory
+        set(value) {_idCategory = value}
+
     constructor()
     constructor(nameProduct: String,price: Double) {
         this.name = nameProduct

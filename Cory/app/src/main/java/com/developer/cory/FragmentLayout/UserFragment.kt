@@ -1,25 +1,29 @@
 package com.developer.cory.FragmentLayout
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.developer.cory.Activity.LoginActivity
 import com.developer.cory.Activity.PurchaseHistoryActivity
 import com.developer.cory.Activity.RegisterActivity
 import com.developer.cory.Activity.SettingsActivity
+import com.developer.cory.MainActivity
+import com.developer.cory.Model.EnumOrder
 import com.developer.cory.Model.Temp
 import com.developer.cory.R
 
 import com.developer.cory.databinding.FragmentUserBinding
-import com.developer.cory.modules.ChoXacNhanFragment
 
 class UserFragment : Fragment(),View.OnClickListener {
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
+    private lateinit var dialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,6 +81,7 @@ class UserFragment : Fragment(),View.OnClickListener {
 
         binding.lnChoXacNhan.setOnClickListener(this)
         binding.lnDangGiao.setOnClickListener(this)
+        binding.btnLogout.setOnClickListener(this)
     }
 
     @SuppressLint("CommitTransaction")
@@ -85,23 +90,52 @@ class UserFragment : Fragment(),View.OnClickListener {
         when (view) {
             binding.lnLichSuMuaHang -> {
                 val intent = Intent(context,PurchaseHistoryActivity::class.java)
-                intent.putExtra("key_tab","Đơn mua")
+                intent.putExtra("key_tab",EnumOrder.GIAOHANGTHANHCONG.name)
                 startActivity(intent)
             }
 
             binding.lnChoXacNhan ->{
                 val intent = Intent(context,PurchaseHistoryActivity::class.java)
-                intent.putExtra("key_tab","Chờ xác nhận")
+                intent.putExtra("key_tab",EnumOrder.CHOXACNHAN.name)
                 startActivity(intent)
             }
 
             binding.lnDangGiao ->{
                 val intent = Intent(context,PurchaseHistoryActivity::class.java)
-                intent.putExtra("key_tab","Đang giao")
+                intent.putExtra("key_tab",EnumOrder.DANGGIAOHANG.name)
                 startActivity(intent)
+            }
+
+            binding.btnLogout->{
+                logout()
             }
         }
 
+    }
+
+    @SuppressLint("MissingInflatedId")
+    fun logout(){
+        val build = AlertDialog.Builder(context, R.style.CustomAlert)
+        val viewDialog = layoutInflater.inflate(R.layout.dialog_logout, null)
+
+        val btnOk = viewDialog.findViewById<Button>(R.id.btnOk)
+        val btnNo = viewDialog.findViewById<Button>(R.id.btnNo)
+
+        btnOk.setOnClickListener {
+            val intent = Intent(context,MainActivity::class.java)
+            Temp.reset()
+            startActivity(intent)
+            activity?.finish()
+        }
+
+        btnNo.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        build.setView(viewDialog)
+        build.setCancelable(false)
+        dialog = build.create()
+        dialog.show()
     }
 
     override fun onClick(view: View?) {

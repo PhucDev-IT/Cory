@@ -1,5 +1,6 @@
 package com.developer.cory.FragmentLayout
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.adapters.ViewBindingAdapter.OnViewAttachedToWindow
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -31,9 +33,9 @@ class CartFragment : Fragment(), View.OnClickListener {
     private lateinit var listChoseCart: MutableList<CartModel>
     private val cartService = CartService()
     private lateinit var navController: NavController
-
+    private var listCart:MutableList<CartModel> = ArrayList()
     private val sharedViewModel : PayOrderViewModel by activityViewModels()
-
+    private lateinit var adapter:RvItemCartAdapter
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,7 +43,7 @@ class CartFragment : Fragment(), View.OnClickListener {
     ): View? {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         sharedViewModel.reset()
-        getData()
+        initView()
         binding.btnBuyProduct.setOnClickListener(this)
         return binding.root
     }
@@ -55,7 +57,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         when (p0?.id) {
             R.id.btnBuyProduct -> {
                 if(listChoseCart.size>0){
-                    sharedViewModel.setListCart(listChoseCart)
+                    sharedViewModel.setListCartSelected(listChoseCart)
                     sharedViewModel.setTotalMoney(sumMoney)
                     navController.navigate(R.id.action_cartFragment_to_payOrdersFragment2)
                 }else{
@@ -66,55 +68,63 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
     }
 
-
-    private  var sumMoney:Double = 0.0
-    private fun getData() {
-
-      //  binding.lnIsLoading.visibility = View.VISIBLE
-
+    private fun initView(){
+        getData()
         sumMoney = 0.0  //Khi back lại nó bị lưu value cũ nên cần reset
 
-        listChoseCart = mutableListOf()
-        Temp.user?.id?.let {
-            cartService.selectCartByID(it) { listCart ->
-               // binding.lnIsLoading.visibility = View.GONE
-                if (listCart.size<=0) {
-                    binding.lnDefaultCart.visibility = View.VISIBLE
+        adapter = RvItemCartAdapter(emptyList(), object : RvPriceInterface {
+            override fun onClickListener(price: Double, pos: Int) {
 
-                } else {
-
-                    val adapter = RvItemCartAdapter(listCart, object : RvPriceInterface {
-                        override fun onClickListener(price: Double, pos: Int) {
-
-                            sumMoney = 0.0
-                            for (i in 0 until listChoseCart.size) {
-                                if (listChoseCart[i] == listCart[pos]) {
-                                    listChoseCart[i].totalMoney = price
-                                }
-                                sumMoney += listChoseCart[i].totalMoney
-                            }
-                            binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
-
-                        }
-                    }, object : CheckboxInterface {
-                        override fun isChecked(pos: Int) {
-                            listChoseCart.add(listCart[pos])
-                            sumMoney += listCart[pos].totalMoney
-                            binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
-                        }
-
-                        override fun isNotChecked(pos: Int) {
-                            sumMoney -= listCart[pos].totalMoney
-                            listChoseCart.remove(listCart[pos])
-                            binding.tvSumMoney.text = sumMoney.toString()
-                            binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
-                        }
+                sumMoney = 0.0
+                for (i in 0 until listChoseCart.size) {
+                    if (listChoseCart[i] == listCart[pos]) {
+                        listChoseCart[i].totalMoney = price
                     }
-                    )
-                    binding.rvItemCart.adapter = adapter
-                    binding.rvItemCart.layoutManager =
-                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    sumMoney += listChoseCart[i].totalMoney
                 }
+                binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
+
+            }
+        }, object : CheckboxInterface {
+            override fun isChecked(pos: Int) {
+                listChoseCart.add(listCart[pos])
+                sumMoney += listCart[pos].totalMoney
+                binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
+            }
+
+            override fun isNotChecked(pos: Int) {
+                sumMoney -= listCart[pos].totalMoney
+                listChoseCart.remove(listCart[pos])
+                binding.tvSumMoney.text = sumMoney.toString()
+                binding.tvSumMoney.text = FormatCurrency.numberFormat.format(sumMoney)
+            }
+        }
+        )
+        binding.rvItemCart.adapter = adapter
+        binding.rvItemCart.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private  var sumMoney:Double = 0.0
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getData() {
+
+        Temp.user?.id?.let {
+            cartService.selectCartByID(it) { list ->
+                binding.lnIsLoading.visibility = View.GONE
+                sharedViewModel.setListCart(list)
+            }
+        }
+
+
+        sharedViewModel.mListCart.observe(viewLifecycleOwner){list->
+            if(list.isEmpty()){
+                binding.lnDefaultCart.visibility = View.VISIBLE
+            }else{
+                binding.lnDefaultCart.visibility = View.GONE
+                sharedViewModel.mListCart.value?.let { listCart.addAll(it) }
+                adapter.setData(listCart)
+                adapter.notifyDataSetChanged()
             }
         }
     }

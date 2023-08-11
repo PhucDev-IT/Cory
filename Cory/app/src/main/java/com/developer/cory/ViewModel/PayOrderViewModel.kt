@@ -18,12 +18,12 @@ import com.developer.cory.Service.AddressService
 
 class PayOrderViewModel : ViewModel() {
 
-    init {
-        // reset()
-    }
 
-    private val _listCart = MutableLiveData<List<CartModel>>()
-    val listCart: LiveData<List<CartModel>> = _listCart
+    private val _mListCart = MutableLiveData<List<CartModel>>()
+    val mListCart: LiveData<List<CartModel>> = _mListCart
+
+    private val _listCartSelected = MutableLiveData<List<CartModel>>()
+    val listCartSelected: LiveData<List<CartModel>> = _listCartSelected
 
     private val _voucher = MutableLiveData<Voucher>()
     val voucher: LiveData<Voucher> = _voucher
@@ -54,10 +54,12 @@ class PayOrderViewModel : ViewModel() {
         tinhTongTienThanhToan()
     }
 
-    fun setListCart(list: List<CartModel>) {
-        _listCart.value = list
+    fun setListCartSelected(list: List<CartModel>) {
+        _listCartSelected.value = list
     }
-
+    fun setListCart(list: List<CartModel>) {
+        _mListCart.value = list
+    }
     fun setAddress(address: Address) {
         _mAddress.value = address
     }
@@ -79,7 +81,7 @@ class PayOrderViewModel : ViewModel() {
     }
 
      fun reset() {
-        _listCart.value = emptyList()
+         _listCartSelected.value = emptyList()
         _tongTienSanPham.value = 0.0
         _giamGiaXu.value = 0
         _giamGiaVanChuyen.value = 0.0
