@@ -62,7 +62,7 @@ class RvOptionVouchersAdapter(private val list: List<Voucher>, private val onCli
             } else if (list[position].typeVoucher == TypeVoucher.GIAMTHEOPHANTRAM.name) {
                 holder.tvTypeVoucher.text = "Giảm: ${list[position].reduce}%"
             } else if (list[position].typeVoucher == TypeVoucher.GIAMTHEOTIEN.name) {
-                holder.tvTypeVoucher.text = "Giảm: ${FormatCurrency.numberFormat.format(list[position].reduce)}đ"
+                holder.tvTypeVoucher.text = "Giảm: ${FormatCurrency.numberFormat.format(list[position].reduce)}"
             }
 
             val endTime = list[position].endTime?.toDate()

@@ -85,7 +85,6 @@ class SearchActivity : AppCompatActivity() {
             adapter.setData(list)
             adapter.notifyDataSetChanged()
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -104,6 +103,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun initCategory() {
         idCategory = intent.getStringExtra("idCategory").toString()
         val pos = intent.getIntExtra("pos", 0)

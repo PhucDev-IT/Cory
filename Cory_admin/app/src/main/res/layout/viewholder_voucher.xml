@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginTop="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:paddingEnd="6dp"
+    android:layout_margin="10dp"
     android:elevation="6dp"
-    android:orientation="horizontal"
     android:background="@color/white"
-    android:layout_height="wrap_content"
-    tools:ignore="RtlSymmetry">
+    android:layout_height="wrap_content">
 
 
     <LinearLayout
@@ -19,14 +13,13 @@
         android:orientation="vertical"
         android:gravity="center"
         android:background="@color/primaryKeyColor"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/imgVoucher"
-            android:layout_marginHorizontal="10dp"
+            android:layout_margin="10dp"
             android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/icon_free_ship"/>
+            android:layout_height="80dp" />
         <TextView
             android:id="@+id/idVoucher"
             android:layout_marginBottom="4dp"
@@ -38,10 +31,9 @@
             android:text="DHJSEGA"/>
     </LinearLayout>
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:padding="10dp"
-        android:layout_weight="1"
         android:orientation="vertical">
         <TextView
             android:id="@+id/tvTypeVoucher"
@@ -84,16 +76,10 @@
             android:layout_marginTop="5dp"
             android:id="@+id/tvTimeUse"
             android:textSize="14sp"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/red"
             android:text="Thời gian:" />
 
     </LinearLayout>
-    <RadioButton
-        android:id="@+id/rdnButton"
-        android:layout_gravity="center"
-        android:layout_width="25dp"
-        android:layout_height="25dp"/>
 </LinearLayout>

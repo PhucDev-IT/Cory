@@ -1,20 +1,16 @@
 package com.developer.cory.FragmentLayout
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.adapters.ViewBindingAdapter.OnViewAttachedToWindow
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.developer.cory.Activity.Cart_Pay_Orders_Activity
 import com.developer.cory.Adapter.RvItemCartAdapter
 import com.developer.cory.Interface.CheckboxInterface
 import com.developer.cory.Interface.RvPriceInterface
@@ -30,7 +26,7 @@ import com.developer.cory.databinding.FragmentCartBinding
 class CartFragment : Fragment(), View.OnClickListener {
     private lateinit var _binding: FragmentCartBinding
     private val binding get() = _binding
-    private lateinit var listChoseCart: MutableList<CartModel>
+    private  var listChoseCart: MutableList<CartModel> = ArrayList()
     private val cartService = CartService()
     private lateinit var navController: NavController
     private var listCart:MutableList<CartModel> = ArrayList()
@@ -40,7 +36,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         sharedViewModel.reset()
         initView()
