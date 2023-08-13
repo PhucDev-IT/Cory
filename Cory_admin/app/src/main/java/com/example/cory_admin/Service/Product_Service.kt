@@ -63,7 +63,7 @@ class Product_Service(private val db:FirebaseFirestore)  {
     }
 
 
-    fun getDataByCategory(idCategory:String,callback:(List<Product>)->Unit){
+    fun getDataByCategory(idCategory:String,callback:(list:List<Product>)->Unit){
         db.collection("Products").whereEqualTo("idCategory",idCategory)
             .get()
             .addOnSuccessListener {documents ->

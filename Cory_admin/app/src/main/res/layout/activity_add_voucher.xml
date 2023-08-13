@@ -110,6 +110,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Tiêu đề"
+                        android:enabled="false"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -156,6 +157,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Giảm"
+                            android:text="1"
                             android:inputType="phone" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -163,38 +165,30 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtLayoutStartTime"
+                    <TextView
+                        android:id="@+id/tvTimeStart"
                         android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textColorHint="#757573">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtTimeStart"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Thời gian bắt đầu"
-                            android:inputType="datetime" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtLayoutEndTime"
-                        android:layout_width="160dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="10dp"
-                        android:textColorHint="#757573">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edtTimeEnd"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        android:layout_height="55dp"
+                        android:hint="Thời gian bắt đầu"
+                        android:textSize="15sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginEnd="10dp"
+                        android:textColorHint="#757573"
+                        android:background="@drawable/borderwith_1_radius"/>
+                        <TextView
+                            android:id="@+id/tvTimeEnd"
+                            android:layout_width="160dp"
+                            android:layout_height="55dp"
                             android:hint="Thời gian kết thúc"
-                            android:inputType="datetime" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:textSize="15sp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textColorHint="#757573"
+                            android:background="@drawable/borderwith_1_radius"/>
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout

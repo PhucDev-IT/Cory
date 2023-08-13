@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.developer.cory.Interface.RvInterface
 import com.developer.cory.Model.TypeVoucher
 import com.developer.cory.Model.Voucher
@@ -15,13 +16,22 @@ import com.developer.cory.R
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
+import java.util.Date
+import java.util.concurrent.TimeUnit
 
-class RvVoucherAdapter(private val list: List<Voucher>) :
+class RvVoucherAdapter() :
     RecyclerView.Adapter<RvVoucherAdapter.viewHolder>() {
+    private var list: MutableList<Voucher> = ArrayList()
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(lst:List<Voucher>){
+        list.addAll(lst)
+        notifyDataSetChanged()
+    }
+
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imgVoucher: ImageView
         var idVoucher: TextView
-        var tvTypeVoucher: TextView
+        var tvTitle: TextView
         var tvDescription: TextView
         var tvQuantity: TextView
         var tvTimeUse: TextView
@@ -29,7 +39,7 @@ class RvVoucherAdapter(private val list: List<Voucher>) :
         init {
             imgVoucher = itemView.findViewById(R.id.imgVoucher)
             idVoucher = itemView.findViewById(R.id.idVoucher)
-            tvTypeVoucher = itemView.findViewById(R.id.tvTypeVoucher)
+            tvTitle = itemView.findViewById(R.id.tvTitle)
             tvDescription = itemView.findViewById(R.id.tvDescription)
             tvQuantity = itemView.findViewById(R.id.tvQuantity)
             tvTimeUse = itemView.findViewById(R.id.tvTimeUse)
@@ -45,28 +55,29 @@ class RvVoucherAdapter(private val list: List<Voucher>) :
     // Định dạng thời gian
     @SuppressLint("SimpleDateFormat")
     var dateFormat: SimpleDateFormat = SimpleDateFormat("dd-MM-yyyy")
+
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
         holder.itemView.apply {
-            //   holder.idVoucher.text = list[position].idVoucher
+            holder.idVoucher.text = list[position].idVoucher
+            Glide.with(context).load(list[position].img_url).into(holder.imgVoucher)
+            holder.tvDescription.text = list[position].description
+            holder.tvTitle.text = list[position].title
 
-            if (list[position].typeVoucher == TypeVoucher.FREESHIP.name) {
-                holder.tvTypeVoucher.text = "Miễn phí vận chuyển"
-            } else if (list[position].typeVoucher == TypeVoucher.GIAMTHEOPHANTRAM.name) {
-                holder.tvTypeVoucher.text = "Giảm: ${list[position].reduce}%"
-            } else if (list[position].typeVoucher == TypeVoucher.GIAMTHEOTIEN.name) {
-                holder.tvTypeVoucher.text = "Giảm: ${list[position].reduce}đ"
-            }
+            val date = list[position].endTime?.let { Date(it) }
+            val endTime = date?.let { dateFormat.format(it) }
+            val currentTime = System.currentTimeMillis()
+            val difference = currentTime - list[position].endTime!!
 
-            val endTime = list[position].endTime?.toDate()
+            val hours = TimeUnit.MILLISECONDS.toHours(difference)
+            val minutes = TimeUnit.MILLISECONDS.toMinutes(difference) - hours * 60
 
-            val duration = Duration.between(Instant.now(), endTime?.toInstant())
-
-            if (duration.toHours() >24L){
-                holder.tvTimeUse.text = "Thời gian hiệu lực đến ngày: ${dateFormat.format(endTime)}"
-            }else if(duration.toHours()>=1){
-                holder.tvTimeUse.text = "Sắp hết hạn: còn ${duration.toHours()} giờ"
-            }else{
-                holder.tvTimeUse.text = "Sắp hết hạn: còn ${duration.toMinutes()} phút"
+            if (difference < 0) {
+                holder.tvTimeUse.text = "Kết thúc: $endTime"
+            } else if (hours >= 1) {
+                holder.tvTimeUse.text = "Sắp hết hạn: còn $hours giờ"
+            } else {
+                holder.tvTimeUse.text = "Sắp hết hạn: còn $minutes phút"
             }
 
 

@@ -1,25 +1,35 @@
-package com.developer.cory.Adapter
+package com.example.cory_admin.Adapter
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RadioButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.developer.cory.Interface.RvInterface
+import com.example.cory_admin.Model.TypeVoucher
+import com.example.cory_admin.Model.Voucher
+import com.example.cory_admin.R
 
-import com.developer.cory.Model.Voucher
-import com.developer.cory.R
 import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.Instant
 import java.util.Date
-
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.typeOf
 
-class RvOptionVouchersAdapter(private val list: List<Voucher>, private val onClick: RvInterface) :
-    RecyclerView.Adapter<RvOptionVouchersAdapter.viewHolder>() {
+class RvVoucherAdapter() :
+    RecyclerView.Adapter<RvVoucherAdapter.viewHolder>() {
+    private var list: MutableList<Voucher> = ArrayList()
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(lst:List<Voucher>){
+        list.addAll(lst)
+        notifyDataSetChanged()
+    }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imgVoucher: ImageView
@@ -28,7 +38,6 @@ class RvOptionVouchersAdapter(private val list: List<Voucher>, private val onCli
         var tvDescription: TextView
         var tvQuantity: TextView
         var tvTimeUse: TextView
-        var rdnButton:RadioButton
 
         init {
             imgVoucher = itemView.findViewById(R.id.imgVoucher)
@@ -37,24 +46,21 @@ class RvOptionVouchersAdapter(private val list: List<Voucher>, private val onCli
             tvDescription = itemView.findViewById(R.id.tvDescription)
             tvQuantity = itemView.findViewById(R.id.tvQuantity)
             tvTimeUse = itemView.findViewById(R.id.tvTimeUse)
-            rdnButton = itemView.findViewById(R.id.rdnButton)
-
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.viewholder_option_voucher, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.viewholder_voucher, parent, false)
         return viewHolder(view)
     }
 
-    private var checkedPosition = -1
     // Định dạng thời gian
     @SuppressLint("SimpleDateFormat")
     var dateFormat: SimpleDateFormat = SimpleDateFormat("dd-MM-yyyy")
-    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
-    override fun onBindViewHolder(holder: viewHolder, @SuppressLint("RecyclerView") position: Int) {
 
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: viewHolder, position: Int) {
         holder.itemView.apply {
             holder.idVoucher.text = list[position].idVoucher
             Glide.with(context).load(list[position].img_url).into(holder.imgVoucher)
@@ -81,17 +87,9 @@ class RvOptionVouchersAdapter(private val list: List<Voucher>, private val onCli
             holder.tvQuantity.text =
                 (list[position].quantity - list[position].usedVoucher).toString()
 
-
-            // Thiết lập giá trị isChecked theo vị trí của đối tượng trong danh sách
-            holder.rdnButton.isChecked = checkedPosition == position;
-
         }
-        holder.rdnButton.setOnClickListener {
-            // Cập nhật trạng thái của radioButton được chọn
-            checkedPosition = position;
-            notifyDataSetChanged(); // Cập nhật giao diện của RecyclerView
-            onClick.onClickListener(position)
-        }
+
+
     }
 
     override fun getItemCount(): Int {

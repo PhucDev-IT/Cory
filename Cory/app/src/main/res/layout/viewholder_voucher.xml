@@ -18,9 +18,9 @@
         <ImageView
             android:id="@+id/imgVoucher"
             android:layout_margin="10dp"
+            android:scaleType="centerCrop"
             android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/icon_free_ship"/>
+            android:layout_height="80dp" />
         <TextView
             android:id="@+id/idVoucher"
             android:layout_marginBottom="4dp"
@@ -37,20 +37,20 @@
         android:padding="10dp"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/tvTypeVoucher"
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Giảm 12%"
+            android:text=""
             android:textSize="16sp"
             android:textStyle="bold"
-           />
+            />
         <TextView
             android:id="@+id/tvDescription"
             android:textSize="14sp"
             android:layout_marginTop="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dành cho đơn tối thiểu 0 đồng"/>
+            android:text=""/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="30"
+                android:text=""
                 android:textStyle="bold"
                 android:textColor="#02e80e"/>
         </LinearLayout>
@@ -77,13 +77,10 @@
             android:layout_marginTop="5dp"
             android:id="@+id/tvTimeUse"
             android:textSize="14sp"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/red"
-            android:drawablePadding="7dp"
-            android:text="Thời gian:"
-            app:drawableStartCompat="@drawable/icons8_clock_20" />
+            android:text="Thời gian:" />
 
     </LinearLayout>
 </LinearLayout>

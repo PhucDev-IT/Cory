@@ -28,7 +28,9 @@ class MyVoucherFragment : Fragment() {
 
     private fun initView(){
         voucherService.selectVoucher{list->
-            val adapter = RvVoucherAdapter(list)
+            val adapter = RvVoucherAdapter()
+            adapter.setData(list)
+            adapter.notifyDataSetChanged()
             binding.rvVoucherFreeShip.adapter = adapter
             binding.rvVoucherFreeShip.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         }

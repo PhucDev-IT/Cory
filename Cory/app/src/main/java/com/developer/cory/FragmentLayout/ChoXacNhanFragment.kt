@@ -33,31 +33,32 @@ import com.google.firebase.database.ktx.snapshots
 
 
 class ChoXacNhanFragment : Fragment() {
-    private lateinit var _binding:FragmentChoXacNhanBinding
+    private lateinit var _binding: FragmentChoXacNhanBinding
     private val binding get() = _binding
 
-    private val sharedViewModel : PurchaseHistoryViewModel by activityViewModels()
+    private val sharedViewModel: PurchaseHistoryViewModel by activityViewModels()
 
     private val ordersService = OrdersService()
-    private var isLoading:Boolean = false
-    private var isLastPage:Boolean = false
-    private var sizeOld:Int = 0
-    private lateinit var adapter:RvPurchaseHistoryAdapter
-    private var lastKey:String? = ""
-    private var list:MutableList<Order> = ArrayList()
+    private var isLoading: Boolean = false
+    private var isLastPage: Boolean = false
+    private var sizeOld: Int = 0
+    private lateinit var adapter: RvPurchaseHistoryAdapter
+    private var lastKey: String? = ""
+    private var list: MutableList<Order> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentChoXacNhanBinding.inflate(inflater,container,false)
+        _binding = FragmentChoXacNhanBinding.inflate(inflater, container, false)
 
 
-        val linearLayoutManager:LinearLayoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        val linearLayoutManager: LinearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrders.layoutManager = linearLayoutManager
 
-        adapter = RvPurchaseHistoryAdapter(emptyList(),object : RvInterface{
+        adapter = RvPurchaseHistoryAdapter( object : RvInterface {
             override fun onClickListener(pos: Int) {
 
             }
@@ -65,7 +66,8 @@ class ChoXacNhanFragment : Fragment() {
 
         binding.rvOrders.adapter = adapter
 
-        binding.rvOrders.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
+        binding.rvOrders.addOnScrollListener(object :
+            PaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItem() {
                 isLoading = true
                 loadData()
@@ -84,36 +86,17 @@ class ChoXacNhanFragment : Fragment() {
         return binding.root
     }
 
-    private fun loadData(){
+    @SuppressLint("NotifyDataSetChanged")
+    private fun loadData() {
         binding.progressBarLoading.visibility = View.VISIBLE
-        lastKey?.let {
-            ordersService.getValues(it).addListenerForSingleValueEvent(object : ValueEventListener {
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    for(data in snapshot.children){
-                        val order = data.getValue(Order::class.java)
-                        list.add(order!!)
-                        lastKey = data.key
-                        Log.d(TAG,"Values: $order")
-                    }
-                    Toast.makeText(context,"Xong",Toast.LENGTH_SHORT).show()
-                    if(list.size >= (sizeOld+8)){
-                        sizeOld = list.size
-                    }else{
-                        isLastPage = true
-                    }
-
-                    adapter.setData(list)
-                    adapter.notifyDataSetChanged()
-                    binding.progressBarLoading.visibility = View.GONE
-                    isLoading = false
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    binding.progressBarLoading.visibility = View.GONE
-                    isLoading = false
-                }
-            })
+        ordersService.getValues{list ->
+            adapter.setData(list)
+            adapter.notifyDataSetChanged()
+            binding.progressBarLoading.visibility = View.GONE
+            isLoading = false
+            if(list.isEmpty()){
+                isLastPage = true
+            }
         }
     }
 }

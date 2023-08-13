@@ -18,12 +18,12 @@ import com.developer.cory.Model.Order
 import com.developer.cory.R
 import java.text.SimpleDateFormat
 
-class RvPurchaseHistoryAdapter(private var list: List<Order>, private val onClick: RvInterface) :
+class RvPurchaseHistoryAdapter( private val onClick: RvInterface) :
     RecyclerView.Adapter<RvPurchaseHistoryAdapter.viewHolder>() {
-
+    private var list: MutableList<Order> = ArrayList()
      @SuppressLint("NotifyDataSetChanged")
      fun setData(list:List<Order>){
-        this.list = list
+        this.list.addAll(list)
         notifyDataSetChanged()
     }
 

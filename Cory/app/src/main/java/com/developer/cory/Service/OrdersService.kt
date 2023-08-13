@@ -29,11 +29,31 @@ class OrdersService {
     var lastHoaDonKey: String? = null
 
 
-    fun getValues(key:String):Query{
-       // if(key == ""){
-            return database.startAfter(key).orderByKey().equalTo("status", EnumOrder.CHOXACNHAN.name).limitToFirst(10)
-        //}
-        //return database.equalTo("status",EnumOrder.CHOXACNHAN.name).orderByKey().startAfter(key).limitToFirst(8)
+    fun getValues(callback: (list:List<Order>) -> Unit){
+        val query = if(lastHoaDonKey == ""){
+            database.orderByKey().equalTo("status", EnumOrder.CHOXACNHAN.name).limitToFirst(7)
+        } else {
+            database.startAfter(lastHoaDonKey).orderByKey().equalTo("status",EnumOrder.CHOXACNHAN.name).orderByKey().limitToFirst(8)
+        }
+
+        query.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val list = mutableListOf<Order>()
+                for(snap in snapshot.children){
+                    lastHoaDonKey = snap.key
+                    val order = snap.getValue(Order::class.java)
+                    if (order != null) {
+                        list.add(order)
+                    }
+                }
+                callback(list)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Lỗi truy vấn hóa đơn chờ xác nhận: ${error.message}")
+                callback(emptyList())
+            }
+        })
     }
 
 

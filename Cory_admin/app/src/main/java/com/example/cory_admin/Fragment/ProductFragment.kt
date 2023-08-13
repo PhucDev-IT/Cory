@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Activity.RvProductAdapter
@@ -65,6 +66,7 @@ class ProductFragment : Fragment(),OnClickListener {
             override fun loadMoreItem() {
                 isLoading = true
                 binding.swipRefresh.isRefreshing = true
+
             }
 
             override fun isLoading(): Boolean {
@@ -101,6 +103,10 @@ class ProductFragment : Fragment(),OnClickListener {
             adapter.notifyDataSetChanged()
             isLoading = false
             binding.swipRefresh.isRefreshing = false
+            if(list.isEmpty()){
+                isLastPage = true
+                Toast.makeText(context,"Hết rồi", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
