@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.cory_admin.Fragment.ProductFragment
 import com.example.cory_admin.Fragment.StaffFragment
+import com.example.cory_admin.Fragment.ViewMoreFragment
 import com.example.cory_admin.Fragment.VoucherFragment
 import com.example.cory_admin.databinding.ActivityMainBinding
 
@@ -37,6 +38,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.mnuUser ->{
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.frame_layout, StaffFragment())
+                        .addToBackStack(null)
+                        .commit()
+                    return@setOnNavigationItemSelectedListener true
+                }
+
+                R.id.menuOther ->{
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frame_layout, ViewMoreFragment())
                         .addToBackStack(null)
                         .commit()
                     return@setOnNavigationItemSelectedListener true

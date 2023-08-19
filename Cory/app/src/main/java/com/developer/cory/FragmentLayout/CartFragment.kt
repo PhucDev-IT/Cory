@@ -109,6 +109,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             cartService.selectCartByID(it) { list ->
                 binding.lnIsLoading.visibility = View.GONE
                 sharedViewModel.setListCart(list)
+
             }
         }
 

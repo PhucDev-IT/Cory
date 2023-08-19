@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import com.developer.cory.Activity.Cart_Pay_Orders_Activity
 import com.developer.cory.FragmentLayout.CartFragment
+import com.developer.cory.FragmentLayout.DefaultNotLoginFragment
 import com.developer.cory.FragmentLayout.HomeFragment
 import com.developer.cory.FragmentLayout.NotificationFragment
 import com.developer.cory.FragmentLayout.UserFragment
@@ -60,8 +61,15 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.mnuDatHang -> {
-                    val intent = Intent(this,Cart_Pay_Orders_Activity::class.java)
-                    startActivity(intent)
+                    if(Temp.user == null){
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.frame_layout, DefaultNotLoginFragment())
+                            .addToBackStack(null)
+                            .commit()
+                    }else {
+                        val intent = Intent(this, Cart_Pay_Orders_Activity::class.java)
+                        startActivity(intent)
+                    }
                     return@setOnNavigationItemSelectedListener true
                 }
 

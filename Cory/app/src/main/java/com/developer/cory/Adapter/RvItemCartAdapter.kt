@@ -1,6 +1,7 @@
 package com.developer.cory.Adapter
 
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.developer.cory.Interface.RvPriceInterface
 import com.developer.cory.Model.CartModel
 import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.FormatCurrency.Companion.numberFormat
+import com.developer.cory.Model.Temp
 import com.developer.cory.R
 import com.developer.cory.Service.CartService
 import com.google.firebase.firestore.ktx.firestore
@@ -28,6 +30,7 @@ class RvItemCartAdapter(private var list: List<CartModel>, private val onClick: 
 private val onCheckbox:CheckboxInterface) :
     RecyclerView.Adapter<RvItemCartAdapter.viewHolder>() {
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(list:List<CartModel>){
         this.list = list
         notifyDataSetChanged()
@@ -76,6 +79,7 @@ private val onCheckbox:CheckboxInterface) :
     - Các món ăn phụ cũng sẽ kiểm tra kĩ càng và tính tiền
      */
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
         var sideDishes = ""
         holder.itemView.apply {
@@ -162,7 +166,7 @@ private val onCheckbox:CheckboxInterface) :
 
         holder.tvQuantity.text = numberBuyProduct.toString()
 
-        db.collection("Cart").document("l3vFMy0dOKaaxHfNcnV1").collection("ItemsCart")
+        db.collection("Cart").document(Temp.user?.id!!).collection("ItemsCart")
             .document(list[position].product?.id!!)
             .update("quantity",numberBuyProduct)
             .addOnFailureListener { E->

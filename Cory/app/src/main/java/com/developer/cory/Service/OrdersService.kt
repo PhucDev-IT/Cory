@@ -14,121 +14,103 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class OrdersService {
-    private val pageSize:Int = 10
-    private var database: DatabaseReference = Temp.user?.id?.let {
-        FirebaseDatabase.getInstance().getReference("Orders").child(
-            it
-        )
-    }!!
+
+    private val PURCHASED_HISTORY = "PurchasedHistory"
+    private val STATUS_ORDERS: String = "StatusOrders"
 
 
+    private val db = Firebase.firestore.collection("Orders")
+    private val maxSize: Long = 5
 
-    var lastHoaDonKey: String? = null
-
-
-    fun getValues(callback: (list:List<Order>) -> Unit){
-        val query = if(lastHoaDonKey == ""){
-            database.orderByKey().equalTo("status", EnumOrder.CHOXACNHAN.name).limitToFirst(7)
-        } else {
-            database.startAfter(lastHoaDonKey).orderByKey().equalTo("status",EnumOrder.CHOXACNHAN.name).orderByKey().limitToFirst(8)
-        }
-
-        query.addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val list = mutableListOf<Order>()
-                for(snap in snapshot.children){
-                    lastHoaDonKey = snap.key
-                    val order = snap.getValue(Order::class.java)
-                    if (order != null) {
-                        list.add(order)
-                    }
-                }
-                callback(list)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Lỗi truy vấn hóa đơn chờ xác nhận: ${error.message}")
-                callback(emptyList())
-            }
-        })
-    }
+    private var lastHoaDonKey: DocumentSnapshot? = null
 
 
-    fun donHangChoXacNhan(pageNumber: Int,lastKey:String?, callback: (List<Order>,keyLast:String?) -> Unit) {
-
-        Log.d(TAG," Key là: $lastKey")
-        val list = mutableListOf<Order>()
-
-        database.orderByKey().startAt("").equalTo("status", EnumOrder.CHOXACNHAN.name).limitToFirst(10)
-            .get().addOnSuccessListener { doucments->
-                for(document in doucments.children){
-                    val order = document.getValue(Order::class.java)
-                    list.add(order!!)
-                    lastHoaDonKey = document.key
-                }
-                callback(list,lastHoaDonKey)
-            }
-            .addOnFailureListener {e->
-                Log.d(TAG," Không lấy đươc hóa đơn: ${e.message}")
-            }
-    }
-
-    fun dangGiaoHang(callback: (List<Order>)->Unit){
-
-        database.orderByChild("status").equalTo(EnumOrder.DANGGIAOHANG.name)
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val listOrders = mutableListOf<Order>()
-                    for(value in snapshot.children){
-                        val order = value.getValue(Order::class.java)
-                        if (order != null) {
-                            listOrders.add(order)
-                        }
-                    }
-                    callback(listOrders)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG,"Lỗi truy vấn hóa đơn chờ xác nhận: ${error.message}")
-                    callback(emptyList())
-                }
-            })
-    }
-
-    fun lichSuMuaHang(callback: (List<Order>)->Unit){
-
-        database.orderByChild("status").equalTo(EnumOrder.GIAOHANGTHANHCONG.name)
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val listOrders = mutableListOf<Order>()
-                    for(value in snapshot.children){
-                        val order = value.getValue(Order::class.java)
-                        if (order != null) {
-                            listOrders.add(order)
-                        }
-                    }
-                    callback(listOrders)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG,"Lỗi truy vấn hóa đơn chờ xác nhận: ${error.message}")
-                    callback(emptyList())
-                }
-            })
-    }
-
-    fun huyDonHang(idOrder:String,callback:(Boolean)->Boolean){
-
-        database.child(idOrder).child("status").setValue(EnumOrder.HUYDONHANG.name)
+    fun addOrder(order: Order, callback: (b: Boolean) -> Unit) {
+        db.document(STATUS_ORDERS).collection("ItemsOrder").add(order)
             .addOnSuccessListener {
                 callback(true)
             }
-            .addOnFailureListener {e->
+            .addOnFailureListener { err ->
+                Log.e(TAG, "Có lỗi xảy ra khi thêm order: ${err.message}")
                 callback(false)
-                Log.e(TAG,"Có lỗi xóa hóa đơn: ${e.message} ")
+            }
+    }
+
+
+    fun choXacNhan(callback: (list: List<Order>) -> Unit) {
+        db.document(STATUS_ORDERS).collection("ItemsOrder").orderBy("orderDate")
+            .startAfter(lastHoaDonKey).whereEqualTo("status", EnumOrder.CHOXACNHAN.name)
+            .whereEqualTo("idUser", Temp.user?.id)
+            .limit(maxSize)
+            .get().addOnSuccessListener { snapshotDocuments ->
+                if (!snapshotDocuments.isEmpty) {
+                    lastHoaDonKey = snapshotDocuments.documents[snapshotDocuments.size() - 1]
+                    Log.d(TAG, "Key: $lastHoaDonKey")
+                    val list = mutableListOf<Order>()
+                    for (snap in snapshotDocuments) {
+                        var order = snap.toObject(Order::class.java)
+                        order.idOrder = snap.id
+                        list.add(order)
+                    }
+                    callback(list)
+                }
+            }
+            .addOnFailureListener { err ->
+                Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                callback(emptyList())
+            }
+    }
+
+    fun dangGiaoHang(callback: (list: List<Order>) -> Unit) {
+        db.document(STATUS_ORDERS).collection("ItemsOrder").orderBy("orderDate")
+            .startAfter(lastHoaDonKey).whereEqualTo("status", EnumOrder.DANGGIAOHANG.name)
+            .whereEqualTo("idUser", Temp.user?.id)
+            .limit(maxSize)
+            .get().addOnSuccessListener { snapshotDocuments ->
+                if (!snapshotDocuments.isEmpty) {
+                    lastHoaDonKey = snapshotDocuments.documents[snapshotDocuments.size() - 1]
+                    Log.d(TAG, "Key: $lastHoaDonKey")
+                    val list = mutableListOf<Order>()
+                    for (snap in snapshotDocuments) {
+                        var order = snap.toObject(Order::class.java)
+                        order.idOrder = snap.id
+                        list.add(order)
+                    }
+                    callback(list)
+                }
+            }
+            .addOnFailureListener { err ->
+                Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                callback(emptyList())
+            }
+    }
+
+    fun donHangDaMua(callback: (list: List<Order>) -> Unit) {
+        db.document(PURCHASED_HISTORY).collection(Temp.user?.id!!).orderBy("orderDate")
+            .startAfter(lastHoaDonKey)
+            .limit(maxSize)
+            .get().addOnSuccessListener { snapshotDocuments ->
+                if (!snapshotDocuments.isEmpty) {
+                    lastHoaDonKey = snapshotDocuments.documents[snapshotDocuments.size() - 1]
+                    Log.d(TAG, "Key: $lastHoaDonKey")
+                    val list = mutableListOf<Order>()
+                    for (snap in snapshotDocuments) {
+                        var order = snap.toObject(Order::class.java)
+                        order.idOrder = snap.id
+                        list.add(order)
+                    }
+                    callback(list)
+                }
+            }
+            .addOnFailureListener { err ->
+                Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                callback(emptyList())
             }
     }
 }

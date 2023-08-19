@@ -3,6 +3,7 @@ package com.example.cory_admin.Fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -44,7 +45,7 @@ class VoucherFragment : Fragment(),OnClickListener {
         binding.rvVoucher.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
             override fun loadMoreItem() {
                isLoading = true
-                binding.progressbar.visibility = View.VISIBLE
+               // binding.progressbar.visibility = View.VISIBLE
                 getVoucher()
             }
 
@@ -68,16 +69,18 @@ class VoucherFragment : Fragment(),OnClickListener {
     @SuppressLint("NotifyDataSetChanged")
     private fun getVoucher(){
         binding.progressbar.visibility = View.VISIBLE
-        voucherService.selectVoucher { list ->
-            adapter.setData(list)
-            adapter.notifyDataSetChanged()
-            isLoading = false
-            binding.progressbar.visibility = View.GONE
-            if(list.isEmpty()){
-                isLastPage = true
-                Toast.makeText(context,"Hết rồi",Toast.LENGTH_SHORT).show()
+        Handler().postDelayed({
+            voucherService.selectVoucher { list ->
+                adapter.setData(list)
+                adapter.notifyDataSetChanged()
+                isLoading = false
+                binding.progressbar.visibility = View.GONE
+                if(list.isEmpty()){
+                    isLastPage = true
+                    Toast.makeText(context,"Hết rồi",Toast.LENGTH_SHORT).show()
+                }
             }
-        }
+        },1000)
     }
 
     private fun registerClickEvent(){

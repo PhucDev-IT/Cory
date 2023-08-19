@@ -3,7 +3,9 @@ package com.developer.cory.FragmentLayout
 
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.developer.cory.Activity.PurchaseHistoryDetailsActivity
 import com.developer.cory.Adapter.RvPurchaseHistoryAdapter
 import com.developer.cory.Adapter.RvTestAdapter
 import com.developer.cory.Interface.RvInterface
@@ -36,15 +39,12 @@ class ChoXacNhanFragment : Fragment() {
     private lateinit var _binding: FragmentChoXacNhanBinding
     private val binding get() = _binding
 
-    private val sharedViewModel: PurchaseHistoryViewModel by activityViewModels()
-
     private val ordersService = OrdersService()
     private var isLoading: Boolean = false
     private var isLastPage: Boolean = false
-    private var sizeOld: Int = 0
+    private var listOrder = mutableListOf<Order>()
     private lateinit var adapter: RvPurchaseHistoryAdapter
-    private var lastKey: String? = ""
-    private var list: MutableList<Order> = ArrayList()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,16 +60,17 @@ class ChoXacNhanFragment : Fragment() {
 
         adapter = RvPurchaseHistoryAdapter( object : RvInterface {
             override fun onClickListener(pos: Int) {
-
+                val intent = Intent(context,PurchaseHistoryDetailsActivity::class.java)
+                intent.putExtra("key_order",listOrder[pos])
+                startActivity(intent)
             }
         })
-
         binding.rvOrders.adapter = adapter
 
         binding.rvOrders.addOnScrollListener(object :
             PaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItem() {
-                isLoading = true
+                Toast.makeText(context,"???",Toast.LENGTH_SHORT).show()
                 loadData()
             }
 
@@ -89,16 +90,40 @@ class ChoXacNhanFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun loadData() {
         binding.progressBarLoading.visibility = View.VISIBLE
-        ordersService.getValues{list ->
-            adapter.setData(list)
-            adapter.notifyDataSetChanged()
-            binding.progressBarLoading.visibility = View.GONE
-            isLoading = false
-            if(list.isEmpty()){
-                isLastPage = true
+        isLoading = true
+        Handler().postDelayed({
+            ordersService.choXacNhan { list->
+                listOrder.addAll(list)
+                adapter.setData(list)
+                adapter.notifyDataSetChanged()
+                if(list.isEmpty()){
+                    isLastPage = true
+                }
             }
-        }
+            isLoading = false
+            binding.progressBarLoading.visibility = View.GONE
+        },1500)
+
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun loadNext(){
+        binding.progressBarLoading.visibility = View.VISIBLE
+        isLoading = true
+        Handler().postDelayed({
+            ordersService.choXacNhan { list->
+                adapter.setData(list)
+                adapter.notifyDataSetChanged()
+                if(list.isEmpty()){
+                    isLastPage = true
+                }
+            }
+            Toast.makeText(context,"Súc sinh",Toast.LENGTH_SHORT).show()
+            isLoading = false
+            binding.progressBarLoading.visibility = View.GONE
+        },1500)
+    }
+
 }
 
 

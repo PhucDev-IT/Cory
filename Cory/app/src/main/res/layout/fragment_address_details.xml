@@ -125,7 +125,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:textColor="@color/white"
-        android:background="@drawable/btn_3"
+        android:background="@drawable/bg_violet_radius_4dp"
         android:text="Hoàn thành"
         android:textSize="19sp"/>
 

@@ -8,6 +8,11 @@ import java.util.Date
 
 class Order() : Serializable{
 
+
+    private var _idUser:String?=null
+    var idUser:String?
+        get() = _idUser
+        set(value) {_idUser = value}
     private var _idOrder:String?=null
     var idOrder:String?
         get() = _idOrder

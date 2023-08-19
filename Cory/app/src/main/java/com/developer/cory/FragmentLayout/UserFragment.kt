@@ -39,6 +39,7 @@ class UserFragment : Fragment(),View.OnClickListener {
 
     private fun init() {
         if (Temp.user != null) {
+            binding.btnLogout.visibility = View.VISIBLE
             binding.lnAuth.visibility = View.GONE
             binding.lnProfileUser.visibility = View.VISIBLE
 

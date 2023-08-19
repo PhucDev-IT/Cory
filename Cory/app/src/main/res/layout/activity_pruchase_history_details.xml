@@ -351,7 +351,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_3"
+                    android:background="@drawable/bg_violet_radius_4dp"
                     android:textColor="@color/white"
                     android:visibility="gone"
                     android:textStyle="bold"

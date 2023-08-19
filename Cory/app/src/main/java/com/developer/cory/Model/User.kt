@@ -38,7 +38,8 @@ class User {
 
     constructor()
 
-    constructor(numberPhone:String){
+    constructor(numberPhone:String,name:String){
+        this._name = name
         this._numberPhone = numberPhone
     }
 

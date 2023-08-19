@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.cory_admin.Model.EnumOrder
 import com.example.cory_admin.Model.Order
 import com.example.cory_admin.Model.Temp
+import com.example.cory_admin.Model.Voucher
 
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -12,101 +13,113 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 
 class OrdersService {
-    private val pageSize:Int = 10
-    private var database: DatabaseReference = Temp.user?.id?.let {
-        FirebaseDatabase.getInstance().getReference("Orders").child(
-            it
-        )
-    }!!
+    private val PURCHASED_HISTORY = "PurchasedHistory"
+    private val STATUS_ORDERS: String = "StatusOrders"
+    private val maxSize: Long = 5
+    private val db = Firebase.firestore.collection("Orders")
+    private var lastOrderKey: DocumentSnapshot? = null
 
+    fun getAllOrderChoXacNhan(callback: (list: List<Order>) -> Unit) {
+        var orderList = mutableListOf<Order>()
 
+        db.document(STATUS_ORDERS).collection("ItemsOrder")
+            .whereEqualTo("status", EnumOrder.CHOXACNHAN.name).orderBy("orderDate")
+            .startAfter(lastOrderKey).limit(maxSize)
+            .get().addOnSuccessListener { documentSnapshot ->
+                if (!documentSnapshot.isEmpty) {
+                    lastOrderKey = documentSnapshot.documents[documentSnapshot.size() - 1]
 
-    var lastHoaDonKey: String? = null
+                    for (document in documentSnapshot) {
+                        var order = document.toObject(Order::class.java)
+                        order.idOrder = document.id
+                        orderList.add(order)
+                    }
 
-
-    fun getValues(key:String):Query{
-       // if(key == ""){
-            return database.startAfter(key).orderByKey().equalTo("status", EnumOrder.CHOXACNHAN.name).limitToFirst(10)
-        //}
-        //return database.equalTo("status",EnumOrder.CHOXACNHAN.name).orderByKey().startAfter(key).limitToFirst(8)
-    }
-
-
-    fun donHangChoXacNhan(pageNumber: Int,lastKey:String?, callback: (List<Order>, keyLast:String?) -> Unit) {
-
-        Log.d(TAG," Key là: $lastKey")
-        val list = mutableListOf<Order>()
-
-        database.orderByKey().startAt("").equalTo("status", EnumOrder.CHOXACNHAN.name).limitToFirst(10)
-            .get().addOnSuccessListener { doucments->
-                for(document in doucments.children){
-                    val order = document.getValue(Order::class.java)
-                    list.add(order!!)
-                    lastHoaDonKey = document.key
+                    callback(orderList)
                 }
-                callback(list,lastHoaDonKey)
             }
-            .addOnFailureListener {e->
-                Log.d(TAG," Không lấy đươc hóa đơn: ${e.message}")
+            .addOnFailureListener { err ->
+                Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                callback(emptyList())
             }
     }
 
-    fun dangGiaoHang(callback: (List<Order>)->Unit){
 
-        database.orderByChild("status").equalTo(EnumOrder.DANGGIAOHANG.name)
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val listOrders = mutableListOf<Order>()
-                    for(value in snapshot.children){
-                        val order = value.getValue(Order::class.java)
-                        if (order != null) {
-                            listOrders.add(order)
-                        }
+    fun getAllOrderDangChoXuLy(callback: (list: List<Order>) -> Unit) {
+        var orderList = mutableListOf<Order>()
+
+        db.document(STATUS_ORDERS).collection("ItemsOrder")
+            .whereEqualTo("status", EnumOrder.DANGGIAOHANG.name).orderBy("orderDate")
+            .startAfter(lastOrderKey).limit(maxSize)
+            .get().addOnSuccessListener { documentSnapshot ->
+                if (!documentSnapshot.isEmpty) {
+                    lastOrderKey = documentSnapshot.documents[documentSnapshot.size() - 1]
+
+                    for (document in documentSnapshot) {
+                        var order = document.toObject(Order::class.java)
+                        order.idOrder = document.id
+                        orderList.add(order)
                     }
-                    callback(listOrders)
+                    callback(orderList)
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG,"Lỗi truy vấn hóa đơn chờ xác nhận: ${error.message}")
-                    callback(emptyList())
-                }
-            })
+            }
+            .addOnFailureListener { err ->
+                Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                callback(emptyList())
+            }
     }
 
-    fun lichSuMuaHang(callback: (List<Order>)->Unit){
-
-        database.orderByChild("status").equalTo(EnumOrder.GIAOHANGTHANHCONG.name)
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val listOrders = mutableListOf<Order>()
-                    for(value in snapshot.children){
-                        val order = value.getValue(Order::class.java)
-                        if (order != null) {
-                            listOrders.add(order)
-                        }
-                    }
-                    callback(listOrders)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG,"Lỗi truy vấn hóa đơn chờ xác nhận: ${error.message}")
-                    callback(emptyList())
-                }
-            })
-    }
-
-    fun huyDonHang(idOrder:String,callback:(Boolean)->Boolean){
-
-        database.child(idOrder).child("status").setValue(EnumOrder.HUYDONHANG.name)
-            .addOnSuccessListener {
+    fun xacNhanDonHang(idDoucment: String, callback: (b: Boolean) -> Unit) {
+        db.document(STATUS_ORDERS).collection("ItemsOrder").document(idDoucment)
+            .update("status", EnumOrder.DANGGIAOHANG.name).addOnSuccessListener {
                 callback(true)
             }
-            .addOnFailureListener {e->
+            .addOnFailureListener {
                 callback(false)
-                Log.e(TAG,"Có lỗi xóa hóa đơn: ${e.message} ")
             }
     }
+
+    fun huyDonHang(idDoucment: String, callback: (b: Boolean) -> Unit) {
+        db.document(STATUS_ORDERS).collection("ItemsOrder").document(idDoucment)
+            .update("status", EnumOrder.HUYDONHANG.name).addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener {
+                callback(false)
+            }
+    }
+
+    fun removeOrder(idDoucment: String, callback: (b: Boolean) -> Unit) {
+        db.document(STATUS_ORDERS).collection("ItemsOrder").document(idDoucment).delete()
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { err ->
+                Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                callback(false)
+            }
+    }
+
+    //Sau khi giao hàng thì chuyển từ order ở trag thái đang mua sang collection đã mua hàng
+    fun convertToPurchasedHistory(order: Order, callback: (b: Boolean) -> Unit) {
+        order.idUser?.let {
+            removeOrder(it) { b ->
+                if (b) {
+                    db.document(PURCHASED_HISTORY).collection(it).add(order).addOnSuccessListener {
+                        callback(true)
+                    }.addOnFailureListener { err ->
+                        Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                        callback(false)
+                    }
+                }else{
+                    callback(false)
+                }
+            }
+        }
+    }
+
 }

@@ -318,7 +318,7 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginBottom="1.5dp"
                         android:background="@drawable/title_background_user"
-                        android:paddingLeft="20dp"
+                        android:paddingStart="20dp"
                         android:paddingTop="2dp"
                         android:paddingBottom="2dp"
                         android:text="Tiện ích của tôi"
@@ -421,7 +421,7 @@
                             android:id="@+id/textView21"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
                             android:text="Săn thưởng cùng Cory"
                             android:textSize="16sp" />
 
@@ -573,6 +573,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
+                android:visibility="gone"
                 android:textColor="@color/primaryKeyColor"
                 android:background="@drawable/btn_logout"
                 android:text="Đăng xuất" />

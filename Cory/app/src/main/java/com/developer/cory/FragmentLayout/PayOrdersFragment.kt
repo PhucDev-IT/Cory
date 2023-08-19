@@ -27,6 +27,7 @@ import com.developer.cory.Model.pushNotification
 import com.developer.cory.R
 import com.developer.cory.Service.AddressService
 import com.developer.cory.Service.CartService
+import com.developer.cory.Service.OrdersService
 import com.developer.cory.ViewModel.PayOrderViewModel
 import com.developer.cory.databinding.FragmentPayOrdersBinding
 import com.google.firebase.Timestamp
@@ -43,7 +44,7 @@ class PayOrdersFragment : Fragment() {
 
     private lateinit var _binding: FragmentPayOrdersBinding
     private val binding get() = _binding
-
+    private var ordersService = OrdersService()
     private val addressService = AddressService()
     private lateinit var navController: NavController
     private val sharedViewModel: PayOrderViewModel by activityViewModels()
@@ -239,39 +240,34 @@ class PayOrdersFragment : Fragment() {
         order.voucher = sharedViewModel.voucher.value
         order.orderDate = Date()
         order.status = EnumOrder.CHOXACNHAN.name
+        order.idUser = Temp.user?.id
 
-        var id = dbRef.push().key!!
-        order.idOrder = id
-
-        Temp.user?.id?.let {
-            dbRef.child(it).child(id).setValue(order)
-                .addOnCompleteListener {
-                    context?.let { it1 ->
-                        pushNotification().sendNotification(
-                            it1,
-                            "Đặt hàng thành công",
-                            "Bạn vừa đặt ${order.listCart?.size} sản phẩm chỉ với ${
-                                FormatCurrency.numberFormat.format(
-                                    sharedViewModel.tongThanhToan.value
-                                )
-                            }"
-                        )
-                    }
-
-                    sharedViewModel.listCartSelected.value?.let { it1 -> CartService().removeCart(it1) }
-
-                    val intent = Intent(context, PurchaseHistoryActivity::class.java)
-                    intent.putExtra("key_tab","Chờ xác nhận")
-                    startActivity(intent)
-                    activity?.finish()
-
+        ordersService.addOrder(order){b ->
+            if(b){
+                context?.let { it1 ->
+                    pushNotification().sendNotification(
+                        it1,
+                        "Đặt hàng thành công",
+                        "Bạn vừa đặt ${order.listCart?.size} sản phẩm chỉ với ${
+                            FormatCurrency.numberFormat.format(
+                                sharedViewModel.tongThanhToan.value
+                            )
+                        }"
+                    )
                 }
-                .addOnFailureListener { err ->
-                    Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
-                    Log.e("Lỗi thanh toán: ", err.localizedMessage)
-                }
+                sharedViewModel.listCartSelected.value?.let { it1 -> CartService().removeCart(it1) }
+
+                val intent = Intent(context, PurchaseHistoryActivity::class.java)
+                intent.putExtra("key_tab","Chờ xác nhận")
+                startActivity(intent)
+                activity?.finish()
+            }else{
+                Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
+            }
         }
+
     }
+
 
 
 }

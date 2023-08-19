@@ -21,9 +21,10 @@ import java.text.SimpleDateFormat
 class RvPurchaseHistoryAdapter( private val onClick: RvInterface) :
     RecyclerView.Adapter<RvPurchaseHistoryAdapter.viewHolder>() {
     private var list: MutableList<Order> = ArrayList()
+
      @SuppressLint("NotifyDataSetChanged")
-     fun setData(list:List<Order>){
-        this.list.addAll(list)
+     fun setData(lst:List<Order>){
+        this.list.addAll(lst)
         notifyDataSetChanged()
     }
 

@@ -17,7 +17,7 @@ import com.google.firebase.ktx.Firebase
 class CartService {
     private var db = Firebase.firestore
 
-    fun selectCartByID(idUser: String, callback: (List<CartModel>) -> Unit) {
+    fun selectCartByID(idUser: String, callback: (list:List<CartModel>) -> Unit) {
         var listCart = mutableListOf<CartModel>()
 
         db.collection("Cart").document(idUser).collection("ItemsCart")
@@ -45,15 +45,17 @@ class CartService {
                                     listCart.add(cartM)
                                 }
                             } else {
-                                Log.d(ContentValues.TAG, "Không có dữ liệu")
+                                Log.d(TAG, "Không có dữ liệu")
                             }
-                        }.addOnFailureListener { exception ->
-                            Log.d(ContentValues.TAG, "Có lỗi xảy ra: ", exception)
-                        }
-                        .addOnCompleteListener {
+                            Log.d(TAG,"Values: ${listCart.size}")
                             callback(listCart)
+                        }.addOnFailureListener { exception ->
+                            Log.d(TAG, "Có lỗi xảy ra: ", exception)
                         }
                 }
+            }.addOnFailureListener { exception ->
+                Log.d(TAG, "Có lỗi xảy ra: ", exception)
+                callback(emptyList())
             }
     }
 
