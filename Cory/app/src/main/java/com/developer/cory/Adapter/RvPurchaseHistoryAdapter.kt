@@ -1,7 +1,7 @@
 package com.developer.cory.Adapter
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +11,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.developer.cory.Interface.RvInterface
+import com.developer.cory.Interface.ClickObjectInterface
 import com.developer.cory.Model.EnumOrder
 import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.Order
 import com.developer.cory.R
 import java.text.SimpleDateFormat
 
-class RvPurchaseHistoryAdapter( private val onClick: RvInterface) :
+class RvPurchaseHistoryAdapter( private val onClick: ClickObjectInterface<Order>) :
     RecyclerView.Adapter<RvPurchaseHistoryAdapter.viewHolder>() {
     private var list: MutableList<Order> = ArrayList()
 
      @SuppressLint("NotifyDataSetChanged")
      fun setData(lst:List<Order>){
+         Log.d(TAG,"SIZE: ${lst.size}")
         this.list.addAll(lst)
         notifyDataSetChanged()
     }
@@ -105,7 +106,7 @@ class RvPurchaseHistoryAdapter( private val onClick: RvInterface) :
         }
 
         holder.btnXem.setOnClickListener {
-            onClick.onClickListener(position)
+            onClick.onClickListener(list[position])
         }
     }
 

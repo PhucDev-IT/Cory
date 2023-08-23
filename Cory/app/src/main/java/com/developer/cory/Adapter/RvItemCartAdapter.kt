@@ -11,23 +11,20 @@ import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.developer.cory.Interface.CheckboxInterface
-import com.developer.cory.Interface.RvPriceInterface
+import com.developer.cory.Interface.CkbCartInterface
+import com.developer.cory.Interface.RvChooseCartInterface
 import com.developer.cory.Model.CartModel
-import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.FormatCurrency.Companion.numberFormat
 import com.developer.cory.Model.Temp
 import com.developer.cory.R
-import com.developer.cory.Service.CartService
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
-class RvItemCartAdapter(private var list: List<CartModel>, private val onClick: RvPriceInterface,
-private val onCheckbox:CheckboxInterface) :
+class RvItemCartAdapter(private var list: List<CartModel>, private val onClick: RvChooseCartInterface,
+                        private val onCheckbox:CkbCartInterface) :
     RecyclerView.Adapter<RvItemCartAdapter.viewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
@@ -122,9 +119,9 @@ private val onCheckbox:CheckboxInterface) :
             holder.ckbProduct.setOnClickListener {
 
                 if (holder.ckbProduct.isChecked) {
-                    onCheckbox.isChecked(position)
+                    onCheckbox.isChecked(list[position])
                 } else {
-                    onCheckbox.isNotChecked(position)
+                    onCheckbox.isNotChecked(list[position])
                 }
             }
 
@@ -133,14 +130,14 @@ private val onCheckbox:CheckboxInterface) :
         holder.btnUp.setOnClickListener {
            upDownQuantity(holder.btnUp, holder, position)
             if(holder.ckbProduct.isChecked){
-                onClick.onClickListener(list[position].totalMoney, position)
+                onClick.onClickListener(list[position].totalMoney, list[position])
             }
 
         }
         holder.btnDown.setOnClickListener {
             upDownQuantity(holder.btnDown, holder, position)
             if(holder.ckbProduct.isChecked) {
-                onClick.onClickListener(list[position].totalMoney.unaryMinus(), position)
+                onClick.onClickListener(list[position].totalMoney.unaryMinus(), list[position])
             }
         }
 

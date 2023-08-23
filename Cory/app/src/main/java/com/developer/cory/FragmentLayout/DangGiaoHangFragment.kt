@@ -12,12 +12,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Activity.PurchaseHistoryDetailsActivity
 import com.developer.cory.Adapter.RvPurchaseHistoryAdapter
+import com.developer.cory.Interface.ClickObjectInterface
 import com.developer.cory.Interface.RvInterface
+import com.developer.cory.Model.EnumOrder
 import com.developer.cory.Model.Order
 import com.developer.cory.Model.PaginationScrollListener
-import com.developer.cory.R
 import com.developer.cory.Service.OrdersService
-import com.developer.cory.databinding.FragmentChoXacNhanBinding
 import com.developer.cory.databinding.FragmentDangGiaoHangBinding
 
 class DangGiaoHangFragment : Fragment() {
@@ -40,10 +40,10 @@ class DangGiaoHangFragment : Fragment() {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvDangGiaoHang.layoutManager = linearLayoutManager
 
-        adapter = RvPurchaseHistoryAdapter( object : RvInterface {
-            override fun onClickListener(pos: Int) {
-                val intent = Intent(context,PurchaseHistoryDetailsActivity::class.java)
-                intent.putExtra("key_order",listOrder[pos])
+        adapter = RvPurchaseHistoryAdapter(object : ClickObjectInterface<Order> {
+            override fun onClickListener(t: Order) {
+                val intent = Intent(context, PurchaseHistoryDetailsActivity::class.java)
+                intent.putExtra("key_order",t)
                 startActivity(intent)
             }
         })
@@ -52,7 +52,8 @@ class DangGiaoHangFragment : Fragment() {
         binding.rvDangGiaoHang.addOnScrollListener(object :
             PaginationScrollListener(linearLayoutManager) {
             override fun loadMoreItem() {
-                loadData()
+                isLoading = true
+                loadNext()
             }
 
             override fun isLoading(): Boolean {
@@ -64,29 +65,49 @@ class DangGiaoHangFragment : Fragment() {
             }
         })
 
-        loadData()
+        getFirstPage()
         return binding.root
     }
 
 
-
     @SuppressLint("NotifyDataSetChanged")
-    private fun loadData() {
+    private fun getFirstPage() {
 
         isLoading = true
         Handler().postDelayed({
-            ordersService.dangGiaoHang { list->
-                listOrder.addAll(list)
+            ordersService.getFirsPage(EnumOrder.DANGGIAOHANG.name) { list ->
                 adapter.setData(list)
                 adapter.notifyDataSetChanged()
-                if(list.isEmpty()){
+                if (list.isEmpty()) {
+                   // binding.lnChuaCoDonHang.visibility = View.VISIBLE
+                } else if (list.size < 5) {
                     isLastPage = true
+                    Toast.makeText(context, "Hết dữ liệu", Toast.LENGTH_SHORT).show()
                 }
             }
             isLoading = false
-
-        },1500)
+          //  binding.progressBarLoading.visibility = View.GONE
+        }, 1500)
 
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun loadNext() {
+       // binding.progressBarLoading.visibility = View.VISIBLE
+
+        Handler().postDelayed({
+            ordersService.loadNextPage(EnumOrder.DANGGIAOHANG.name) { list ->
+                adapter.setData(list)
+                adapter.notifyDataSetChanged()
+                if (list.isEmpty()) {
+                    isLastPage = true
+                }
+            }
+
+            isLoading = false
+         //   binding.progressBarLoading.visibility = View.GONE
+        }, 1500)
+    }
+
 
 }

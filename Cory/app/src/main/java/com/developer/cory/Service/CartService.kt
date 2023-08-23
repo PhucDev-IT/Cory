@@ -17,7 +17,7 @@ import com.google.firebase.ktx.Firebase
 class CartService {
     private var db = Firebase.firestore
 
-    fun selectCartByID(idUser: String, callback: (list:List<CartModel>) -> Unit) {
+    fun selectCartByID(idUser: String, callback: (list: List<CartModel>) -> Unit) {
         var listCart = mutableListOf<CartModel>()
 
         db.collection("Cart").document(idUser).collection("ItemsCart")
@@ -47,11 +47,13 @@ class CartService {
                             } else {
                                 Log.d(TAG, "Không có dữ liệu")
                             }
-                            Log.d(TAG,"Values: ${listCart.size}")
+
+                            Log.d(TAG, "Values: ${listCart.size}")
                             callback(listCart)
                         }.addOnFailureListener { exception ->
                             Log.d(TAG, "Có lỗi xảy ra: ", exception)
                         }
+
                 }
             }.addOnFailureListener { exception ->
                 Log.d(TAG, "Có lỗi xảy ra: ", exception)
@@ -67,7 +69,7 @@ class CartService {
                 Temp.user?.id?.let { it1 ->
                     db.collection("Cart").document(it1).collection("ItemsCart").document(it)
                         .delete()
-                        .addOnFailureListener {  e->
+                        .addOnFailureListener { e ->
                             e.message?.let { it2 -> Log.e("Không thể xóa cart: ", it2) }
                         }
                 }
@@ -76,13 +78,12 @@ class CartService {
     }
 
 
-    fun updateCart(idUser: String,cart:CartModel)
-    {
+    fun updateCart(idUser: String, cart: CartModel) {
         db.collection("Cart").document(idUser).collection("ItemsCart").document(cart.product?.id!!)
             .set(cart, SetOptions.merge())
             .addOnCompleteListener {
-            }.addOnFailureListener { E->
-            Log.e(TAG,"Có lỗi: ",E)
+            }.addOnFailureListener { E ->
+                Log.e(TAG, "Có lỗi: ", E)
 
             }
     }

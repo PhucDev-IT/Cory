@@ -48,10 +48,10 @@ class ChoXacNhanFragment : Fragment() {
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrders.layoutManager = linearLayoutManager
 
-        adapter = OrderManagerAdapter( object : RvInterface {
+        adapter = OrderManagerAdapter(object : RvInterface {
             override fun onClickListener(pos: Int) {
-                val intent = Intent(context,OrderDetailsActivity::class.java)
-                intent.putExtra("key_order",listOrder[pos])
+                val intent = Intent(context, OrderDetailsActivity::class.java)
+                intent.putExtra("key_order", listOrder[pos])
                 startActivity(intent)
             }
         })
@@ -62,7 +62,7 @@ class ChoXacNhanFragment : Fragment() {
             override fun loadMoreItem() {
                 isLoading = true
                 viewModel.getListOrderChoXacNhan()
-               // loadData()
+                // loadData()
             }
 
             override fun isLoading(): Boolean {
@@ -83,30 +83,40 @@ class ChoXacNhanFragment : Fragment() {
     private fun loadData() {
         binding.progressBarLoading.visibility = View.VISIBLE
 
+//        Handler().postDelayed({
+//            viewModel.getListOrderChoXacNhan()
+//            isLoading = false
+//            binding.progressBarLoading.visibility = View.GONE
+//        },1500)
+
         Handler().postDelayed({
-            viewModel.getListOrderChoXacNhan()
+            ordersService.paginationReal { list ->
+                listOrder.addAll(list)
+                adapter.setData(list)
+                adapter.notifyDataSetChanged()
+            }
             isLoading = false
             binding.progressBarLoading.visibility = View.GONE
-        },1500)
+        }, 1000)
 
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun observeViewModel(){
+    private fun observeViewModel() {
 
-        viewModel.listOrdersChoXacNhan.observe(viewLifecycleOwner) { list->
-            if(list.isNotEmpty()){
-                listOrder.addAll(list)
-                adapter.setData(list)
-                adapter.notifyDataSetChanged()
-
-            }else{
-                    binding.lnHaveNotOrders.visibility = View.VISIBLE
-                    binding.rvOrders.visibility = View.GONE
-                    isLastPage = true
-
-            }
-        }
+//        viewModel.listOrdersChoXacNhan.observe(viewLifecycleOwner) { list ->
+//            if (list.isNotEmpty()) {
+//                listOrder.addAll(list)
+//                adapter.setData(list)
+//                adapter.notifyDataSetChanged()
+//
+//            } else {
+//                binding.lnHaveNotOrders.visibility = View.VISIBLE
+//                binding.rvOrders.visibility = View.GONE
+//                isLastPage = true
+//
+//            }
+//        }
     }
 }
 

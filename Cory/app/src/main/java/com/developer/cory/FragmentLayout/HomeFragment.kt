@@ -34,7 +34,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
-class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class HomeFragment : Fragment() {
 
     private lateinit var _binding: FragmentHomeBinding
     private val binding get() = _binding
@@ -42,8 +42,7 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private val productService = Product_Service(db)
     private val categoryService = CategoryService(db)
 
-
-
+    private lateinit var adapterSuggest:RvProductApdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,13 +60,14 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             startActivity(intent)
         }
 
+        registerEventClick()
         initSlider()
         return binding.root
     }
 
 
     private fun getDataProduct() {
-        productService.selectData{ listProduct->
+        productService.selectData { listProduct ->
 
             val adapter = RvProductApdapter(listProduct, object : RvInterface {
                 override fun onClickListener(pos: Int) {
@@ -83,9 +83,24 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 LinearLayoutManager.HORIZONTAL, false
             )
         }
+        getDataProductSuggestToday()
 
     }
 
+    private fun getDataProductSuggestToday(){
+        productService.selectData { list->
+            adapterSuggest = RvProductApdapter(list, object : RvInterface {
+                override fun onClickListener(pos: Int) {
+                    val intent = Intent(context, ShowDetailsProductActivity::class.java)
+                    intent.putExtra("product", list[pos])
+                    startActivity(intent)
+                }
+            })
+
+            binding.rvGoiY.adapter = adapterSuggest
+            binding.rvGoiY.layoutManager =  GridLayoutManager(context,2)
+        }
+    }
 
     private fun initSlider() {
         val imageList = ArrayList<SlideModel>() // Create image list
@@ -98,24 +113,31 @@ class HomeFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun initCategory() {
-      categoryService.selectAllData{listCategory->
-          val adapter = RvCategoryHome(listCategory, object : RvInterface {
-              override fun onClickListener(pos: Int) {
-                  val intent = Intent(context, SearchActivity::class.java)
-                  intent.putExtra("idCategory", listCategory[pos].id)
-                  intent.putExtra("pos", pos)
-                  intent.putExtra("listCate",listCategory.toTypedArray())
-                  startActivity(intent)
-              }
-          })
-          binding.rvCategory.adapter = adapter
-          binding.rvCategory.layoutManager =
-              GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
-      }
+        categoryService.selectAllData { listCategory ->
+            val adapter = RvCategoryHome(listCategory, object : RvInterface {
+                override fun onClickListener(pos: Int) {
+                    val intent = Intent(context, SearchActivity::class.java)
+                    intent.putExtra("idCategory", listCategory[pos].id)
+                    intent.putExtra("pos", pos)
+
+                    startActivity(intent)
+                }
+            })
+            binding.rvCategory.adapter = adapter
+            binding.rvCategory.layoutManager =
+                GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
+        }
     }
 
-    override fun onRefresh() {
-        getDataProduct()
+
+    private fun registerEventClick(){
+        binding.swipRefresh.setOnRefreshListener {
+            Handler().postDelayed({
+                getDataProduct()
+                binding.swipRefresh.isRefreshing = false
+            }, 2000)
+        }
     }
+
 
 }

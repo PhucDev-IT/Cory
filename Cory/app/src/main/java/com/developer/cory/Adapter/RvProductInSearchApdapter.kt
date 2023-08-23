@@ -6,12 +6,14 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.developer.cory.Interface.ClickObjectInterface
 import com.developer.cory.Model.Product
-import com.developer.cory.Interface.RvInterface
+import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.R
 
 
-class RvProductInSearchApdapter(private var list:List<Product>, private val onClick: RvInterface):RecyclerView.Adapter<RvProductInSearchApdapter.viewHolder>() {
+class RvProductInSearchApdapter(private var list:List<Product>, private val onClick: ClickObjectInterface<Product>):RecyclerView.Adapter<RvProductInSearchApdapter.viewHolder>() {
     class viewHolder(itemView:View):RecyclerView.ViewHolder(itemView)
 
 
@@ -36,13 +38,13 @@ class RvProductInSearchApdapter(private var list:List<Product>, private val onCl
            val tvPrice = findViewById<TextView>(R.id.tvPrice)
            val tvContent = findViewById<TextView>(R.id.tvContent)
 
-           tvPrice.text = list[position].price.toString()+"đ"
+           tvPrice.text = FormatCurrency.numberFormat.format(list[position].price)
            tvNameProduct.text = list[position].name
            tvContent.text = list[position].description
 
-          //  imgProduct.setImageResource(list[position].url)
+           Glide.with(context).load(list[position].img_url).into(imgProduct)
            holder.itemView.setOnClickListener{
-               onClick.onClickListener(position)
+               onClick.onClickListener(list[position])
            }
        }
     }

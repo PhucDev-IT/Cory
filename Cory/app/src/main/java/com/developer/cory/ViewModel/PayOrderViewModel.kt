@@ -15,9 +15,11 @@ import com.developer.cory.Model.Temp
 import com.developer.cory.Model.TypeVoucher
 import com.developer.cory.Model.Voucher
 import com.developer.cory.Service.AddressService
+import com.developer.cory.Service.CartService
 
 class PayOrderViewModel : ViewModel() {
 
+    private val cartService = CartService()
 
     private val _mListCart = MutableLiveData<List<CartModel>>()
     val mListCart: LiveData<List<CartModel>> = _mListCart
@@ -57,8 +59,11 @@ class PayOrderViewModel : ViewModel() {
     fun setListCartSelected(list: List<CartModel>) {
         _listCartSelected.value = list
     }
-    fun setListCart(list: List<CartModel>) {
-        _mListCart.value = list
+    fun getListCart() {
+        cartService.selectCartByID(Temp.user?.id!!){list ->
+            _mListCart.value = list
+        }
+
     }
     fun setAddress(address: Address) {
         _mAddress.value = address

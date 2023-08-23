@@ -122,4 +122,28 @@ class OrdersService {
         }
     }
 
+    fun paginationReal(callback: (list: List<Order>) -> Unit) {
+        val dbef = FirebaseDatabase.getInstance().getReference("Orders")
+        val query = dbef
+            .orderByValue()
+            .equalTo("status", EnumOrder.CHOXACNHAN.name)
+            .startAfter("-Nb4l5EX0x9mx32J_X6r") // Sử dụng startAfter() nếu có lastOrderKey
+            .limitToFirst(6)
+
+        query.get()
+            .addOnSuccessListener { snapShot ->
+                var list = mutableListOf<Order>()
+                for (child in snapShot.children) {
+                    val orders = child.getValue(Order::class.java)
+                    list.add(orders!!)
+                    Log.d(TAG, "Key: $orders")
+                }
+                callback(list)
+            }
+            .addOnFailureListener { error ->
+                Log.e(TAG, "LỖI: ${error.message}")
+            }
+    }
+
+
 }

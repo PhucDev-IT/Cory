@@ -13,6 +13,8 @@ import kotlinx.coroutines.tasks.await
 
 class Product_Service(private val db:FirebaseFirestore)  {
 
+    //Lấy ngẫu nhiên số sản phẩm
+
     fun selectData(onDataLoaded: (List<Product>) -> Unit) {
         db.collection("Products")
             .get()

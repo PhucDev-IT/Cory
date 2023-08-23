@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.frame_layout, HomeFragment())
                         .addToBackStack(null)
                         .commit()
-                    
+
                     return@setOnNavigationItemSelectedListener true
                 }
 
