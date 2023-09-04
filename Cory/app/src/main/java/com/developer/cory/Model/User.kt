@@ -24,6 +24,13 @@ class User {
             _dateOfBirth = value
         }
 
+    private var _idAccount: String? = null
+    var idAccount: String?
+        get() = _idAccount
+        set(value) {
+            _idAccount = value
+        }
+
     @Exclude
     private var _listAddress:List<Address>?=null
     var listAddress:List<Address>?
@@ -31,16 +38,13 @@ class User {
         set(value) {_listAddress = value}
 
 
-    private var _numberPhone:String?=null
-    var numberPhone:String?
-        get() = _numberPhone
-        set(value) {_numberPhone = value}
+
 
     constructor()
 
-    constructor(numberPhone:String,name:String){
+    constructor(name:String,idAccount:String){
         this._name = name
-        this._numberPhone = numberPhone
+        this._idAccount = idAccount
     }
 
 

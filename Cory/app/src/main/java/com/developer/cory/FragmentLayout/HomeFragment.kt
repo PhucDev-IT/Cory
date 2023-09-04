@@ -1,6 +1,7 @@
 package com.developer.cory.FragmentLayout
 
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -21,12 +22,15 @@ import com.developer.cory.Activity.RvProductApdapter
 import com.developer.cory.Activity.SearchActivity
 import com.developer.cory.Activity.ShowDetailsProductActivity
 import com.developer.cory.Adapter.RvCategoryHome
+import com.developer.cory.Interface.ClickObjectInterface
 import com.developer.cory.Model.Category
 import com.developer.cory.Model.Product
 import com.developer.cory.Interface.RvInterface
+import com.developer.cory.Model.PaginationScrollListener
 import com.developer.cory.R
 import com.developer.cory.Service.CategoryService
 import com.developer.cory.Service.Product_Service
+import com.developer.cory.database.ProductDatabase
 import com.developer.cory.databinding.FragmentHomeBinding
 import com.developer.cory.databinding.ShimmerLayoutHomeBinding
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -42,7 +46,10 @@ class HomeFragment : Fragment() {
     private val productService = Product_Service(db)
     private val categoryService = CategoryService(db)
 
-    private lateinit var adapterSuggest:RvProductApdapter
+    private lateinit var adapterSuggest: RvProductApdapter
+
+    private var isLastPage: Boolean = false
+    private var isLoading: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,56 +57,74 @@ class HomeFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-
+        initSlider()
         initCategory()
-        getDataProduct()
-
-
-        binding.tvSearchProduct.setOnClickListener {
-            val intent = Intent(requireContext(), SearchActivity::class.java)
-            startActivity(intent)
-        }
+        initProduct()
+       // loadListLikedProduct()
 
         registerEventClick()
-        initSlider()
         return binding.root
     }
 
+    private fun initProduct() {
 
-    private fun getDataProduct() {
-        productService.selectData { listProduct ->
+        adapterSuggest = RvProductApdapter(emptyList(), object : ClickObjectInterface<Product> {
+            override fun onClickListener(t: Product) {
+                val intent = Intent(context, ShowDetailsProductActivity::class.java)
+                intent.putExtra("product", t)
+                startActivity(intent)
+            }
+        })
 
-            val adapter = RvProductApdapter(listProduct, object : RvInterface {
-                override fun onClickListener(pos: Int) {
-                    val intent = Intent(context, ShowDetailsProductActivity::class.java)
-                    intent.putExtra("product", listProduct[pos])
-                    startActivity(intent)
-                }
-            })
+        val linearLayoutManager: LinearLayoutManager = GridLayoutManager(context, 2)
+        binding.rvGoiY.adapter = adapterSuggest
+        binding.rvGoiY.layoutManager = linearLayoutManager
 
-            binding.rvDemo.adapter = adapter
-            binding.rvDemo.layoutManager = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL, false
-            )
-        }
-        getDataProductSuggestToday()
+        binding.rvGoiY.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
+            override fun loadMoreItem() {
+                loadNextProduct()
+            }
 
+            override fun isLoading(): Boolean {
+               return isLoading
+            }
+
+            override fun isLastPage(): Boolean {
+               return  isLastPage
+            }
+        })
+
+        getFirstListProductSuggestToday()
     }
 
-    private fun getDataProductSuggestToday(){
-        productService.selectData { list->
-            adapterSuggest = RvProductApdapter(list, object : RvInterface {
-                override fun onClickListener(pos: Int) {
-                    val intent = Intent(context, ShowDetailsProductActivity::class.java)
-                    intent.putExtra("product", list[pos])
-                    startActivity(intent)
-                }
-            })
 
-            binding.rvGoiY.adapter = adapterSuggest
-            binding.rvGoiY.layoutManager =  GridLayoutManager(context,2)
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getFirstListProductSuggestToday() {
+
+        productService.selectFirstPage { list ->
+            adapterSuggest.setData(list)
+            adapterSuggest.notifyDataSetChanged()
+
+            if (list.size < productService.maxSize) {
+                isLastPage = true
+            }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun loadNextProduct() {
+        isLoading = true
+        Handler().postDelayed({
+            productService.getNextPage { list ->
+                adapterSuggest.setData(list)
+                adapterSuggest.notifyDataSetChanged()
+
+                if (list.size < productService.maxSize) {
+                    isLastPage = true
+                }
+            }
+            isLoading = false
+        }, 1500)
     }
 
     private fun initSlider() {
@@ -130,14 +155,26 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun registerEventClick(){
+    private fun registerEventClick() {
         binding.swipRefresh.setOnRefreshListener {
             Handler().postDelayed({
-                getDataProduct()
+                getFirstListProductSuggestToday()
                 binding.swipRefresh.isRefreshing = false
             }, 2000)
         }
+
+        binding.tvSearchProduct.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
     }
+
+    //Phaan trang sản phẩm ưa thích
+
+    private fun initLikedProduct(){
+
+    }
+
 
 
 }

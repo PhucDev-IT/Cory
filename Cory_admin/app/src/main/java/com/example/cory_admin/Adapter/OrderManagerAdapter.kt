@@ -28,6 +28,11 @@ class OrderManagerAdapter(private val onClick:RvInterface):RecyclerView.Adapter<
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun removeOrder(order: Order){
+        list.remove(order)
+        notifyDataSetChanged()
+    }
 
     class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgProduct: ImageView

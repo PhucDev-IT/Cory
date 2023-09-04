@@ -7,12 +7,12 @@ import com.developer.cory.FragmentLayout.DangGiaoHangFragment
 import com.developer.cory.FragmentLayout.LichSuMuaHangFragment
 import com.developer.cory.FragmentLayout.ChoXacNhanFragment
 
-class ViewPagerAdapter : FragmentStateAdapter {
+class ViewPagerPurchasedAdapter : FragmentStateAdapter {
     constructor(fragmentActivity: FragmentActivity) : super(fragmentActivity)
 
 
     override fun getItemCount(): Int {
-        return 100
+        return 5
     }
 
     override fun createFragment(position: Int): Fragment {

@@ -1,9 +1,11 @@
 package com.example.cory_admin.Fragment
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +17,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cory_admin.Activity.OrderDetailsActivity
 import com.example.cory_admin.Adapter.OrderManagerAdapter
 import com.example.cory_admin.Interface.RvInterface
+import com.example.cory_admin.Model.EnumOrder
 import com.example.cory_admin.Model.Order
 import com.example.cory_admin.Model.PaginationScrollListener
 import com.example.cory_admin.Service.OrdersService
 import com.example.cory_admin.ViewModel.MyViewModelFactory
 import com.example.cory_admin.ViewModel.OrdersManagerViewModel
 import com.example.cory_admin.databinding.FragmentChoXacNhanBinding
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 
 class ChoXacNhanFragment : Fragment() {
@@ -62,7 +69,7 @@ class ChoXacNhanFragment : Fragment() {
             override fun loadMoreItem() {
                 isLoading = true
                 viewModel.getListOrderChoXacNhan()
-                // loadData()
+                loadData()
             }
 
             override fun isLoading(): Boolean {
@@ -83,18 +90,53 @@ class ChoXacNhanFragment : Fragment() {
     private fun loadData() {
         binding.progressBarLoading.visibility = View.VISIBLE
 
-//        Handler().postDelayed({
-//            viewModel.getListOrderChoXacNhan()
-//            isLoading = false
-//            binding.progressBarLoading.visibility = View.GONE
-//        },1500)
 
         Handler().postDelayed({
-            ordersService.paginationReal { list ->
-                listOrder.addAll(list)
-                adapter.setData(list)
-                adapter.notifyDataSetChanged()
-            }
+
+            var orderList = mutableListOf<Order>()
+            val db = Firebase.firestore.collection("Orders")
+            db.document("StatusOrders").collection("ItemsOrder")
+                .whereEqualTo("status", EnumOrder.CHOXACNHAN.name).orderBy("orderDate")
+                .limit(6)
+                .addSnapshotListener { value, error ->
+
+                    error?.let {
+                        Toast.makeText(context,"Lỗi: ${it.message}",Toast.LENGTH_SHORT).show()
+                        return@addSnapshotListener
+                    }
+
+                    if (value != null) {
+                        Toast.makeText(context,"Thay đổi",Toast.LENGTH_SHORT).show()
+                        for (document in value) {
+                            var order = document.toObject(Order::class.java)
+                            order.idOrder = document.id
+                            orderList.add(order)
+                        }
+
+
+
+                        listOrder.addAll(orderList)
+                        adapter.setData(orderList)
+                        adapter.notifyDataSetChanged()
+                        if(orderList.size<5){
+                            isLastPage = true
+                            Toast.makeText(context,"Hết rồi",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+
+                }
+
+
+//            ordersService.testReal { list ->
+//                listOrder.addAll(list)
+//                adapter.setData(list)
+//                adapter.notifyDataSetChanged()
+//                if(list.size<5){
+//                    isLastPage = true
+//                    Toast.makeText(context,"Hết rồi",Toast.LENGTH_SHORT).show()
+//                }
+//            }
             isLoading = false
             binding.progressBarLoading.visibility = View.GONE
         }, 1000)
@@ -104,19 +146,6 @@ class ChoXacNhanFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun observeViewModel() {
 
-//        viewModel.listOrdersChoXacNhan.observe(viewLifecycleOwner) { list ->
-//            if (list.isNotEmpty()) {
-//                listOrder.addAll(list)
-//                adapter.setData(list)
-//                adapter.notifyDataSetChanged()
-//
-//            } else {
-//                binding.lnHaveNotOrders.visibility = View.VISIBLE
-//                binding.rvOrders.visibility = View.GONE
-//                isLastPage = true
-//
-//            }
-//        }
     }
 }
 

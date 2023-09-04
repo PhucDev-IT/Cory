@@ -3,6 +3,7 @@ package com.example.cory_admin.Fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -19,18 +20,20 @@ import com.example.cory_admin.R
 import com.example.cory_admin.Service.CategoryService
 import com.example.cory_admin.Service.Product_Service
 import com.example.cory_admin.databinding.FragmentProductsBinding
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
 class ProductFragment : Fragment(),OnClickListener {
-   private lateinit var _binding:FragmentProductsBinding
+    private lateinit var _binding:FragmentProductsBinding
     private val binding get() = _binding
     private val db = Firebase.firestore
     private lateinit var adapter: RvProductAdapter
 
     private var productService = Product_Service(db)
-
+    private var idCategoryChoiced : String = "a"
+    private var lastProductKey:DocumentSnapshot?=null
     private var isLoading:Boolean = false
     private var isLastPage:Boolean = false
 
@@ -44,7 +47,7 @@ class ProductFragment : Fragment(),OnClickListener {
 
 
         initView()
-        getCategory()
+
         handleClick()
         return binding.root
     }
@@ -64,9 +67,7 @@ class ProductFragment : Fragment(),OnClickListener {
         // Xử lý phân trang khi cuộn
         binding.rvProducts.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
             override fun loadMoreItem() {
-                isLoading = true
-                binding.swipRefresh.isRefreshing = true
-
+                getNextPageProduct()
             }
 
             override fun isLoading(): Boolean {
@@ -77,6 +78,8 @@ class ProductFragment : Fragment(),OnClickListener {
                 return isLastPage
             }
         })
+
+        getCategory()
     }
 
     private fun getCategory(){
@@ -84,35 +87,74 @@ class ProductFragment : Fragment(),OnClickListener {
             val adapter = RvCategoryAdapter(listCategory, object : RvInterface {
                 override fun onClickListener(pos: Int) {
                     binding.tvTitleCategory.text = listCategory[pos].nameCategory
-                    binding.swipRefresh.isRefreshing = true
-
-                    // Get the product data after the category is clicked
-                    getValuesProduct(listCategory[pos].id ?: "")
+                    idCategoryChoiced = listCategory[pos].id.toString()
+                    getFirstPageProduct()
                 }
-            })
+            },0)
             binding.rvCategory.adapter = adapter
             binding.rvCategory.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun getValuesProduct(idCate:String){
-        productService.getDataByCategory(idCate){list->
-            adapter.setData(list)
-            adapter.notifyDataSetChanged()
+    private fun getNextPageProduct(){
+        isLoading = true
+        binding.swipRefresh.isRefreshing = true
+
+        Handler().postDelayed({
+            productService.getNextPage(idCategoryChoiced,lastProductKey){list,lastIdProduct->
+                adapter.setData(list)
+                adapter.notifyDataSetChanged()
+                lastProductKey = lastIdProduct
+
+                if(list.size < productService.maxSize){
+                    isLastPage = true
+                    Toast.makeText(context,"Hết sản phẩm", Toast.LENGTH_SHORT).show()
+                }
+            }
             isLoading = false
             binding.swipRefresh.isRefreshing = false
-            if(list.isEmpty()){
-                isLastPage = true
-                Toast.makeText(context,"Hết rồi", Toast.LENGTH_SHORT).show()
-            }
-        }
+        },1000)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getFirstPageProduct(){
+        isLoading = true
+        binding.swipRefresh.isRefreshing = true
+
+        Handler().postDelayed({
+            productService.getFirstPage(idCategoryChoiced){list,lastIdProduct->
+                lastProductKey = lastIdProduct
+
+                if(list.isNotEmpty()){
+                    binding.rvProducts.visibility = View.VISIBLE
+                    binding.lnNotAvailable.visibility = View.GONE
+                    adapter.setData(list)
+                    adapter.notifyDataSetChanged()
+
+                    if(list.size < productService.maxSize){
+                        isLastPage = true
+                    }
+
+                }else{
+                    binding.lnNotAvailable.visibility = View.VISIBLE
+                    binding.rvProducts.visibility = View.GONE
+                    isLastPage = true
+                }
+            }
+            isLoading = false
+            binding.swipRefresh.isRefreshing = false
+        },1000)
+    }
 
     private fun handleClick(){
         binding.fabAdd.setOnClickListener(this)
+
+        binding.swipRefresh.setOnRefreshListener {
+            getFirstPageProduct()
+        }
     }
     override fun onClick(view: View?) {
         when(view){
@@ -120,6 +162,7 @@ class ProductFragment : Fragment(),OnClickListener {
                 val intent = Intent(context,AddProductActivity::class.java)
                 startActivity(intent)
             }
+
         }
     }
 

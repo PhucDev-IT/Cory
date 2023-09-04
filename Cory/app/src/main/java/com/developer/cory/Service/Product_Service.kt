@@ -7,16 +7,36 @@ import android.util.Log
 import com.developer.cory.Model.Category
 import com.developer.cory.Model.Product
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
 
 class Product_Service(private val db:FirebaseFirestore)  {
 
+    val maxSize:Long = 20
+    private var lastIdProduct:DocumentSnapshot?=null
+
     //Lấy ngẫu nhiên số sản phẩm
 
-    fun selectData(onDataLoaded: (List<Product>) -> Unit) {
-        db.collection("Products")
+    fun selectFirstPage(onDataLoaded: (List<Product>) -> Unit) {
+        db.collection("Products").limit(maxSize)
+            .get()
+            .addOnSuccessListener { result ->
+                val listProduct = mutableListOf<Product>()
+                for (document in result) {
+                    val product = document.toObject(Product::class.java)
+                    listProduct.add(product)
+                }
+                onDataLoaded(listProduct)
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Lỗi: .", exception)
+            }
+    }
+
+    fun getNextPage(onDataLoaded: (List<Product>) -> Unit){
+        db.collection("Products").startAfter(lastIdProduct).limit(maxSize)
             .get()
             .addOnSuccessListener { result ->
                 val listProduct = mutableListOf<Product>()

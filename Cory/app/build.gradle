@@ -2,9 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
-
 }
-
+apply plugin: 'kotlin-kapt'
 android {
     namespace 'com.developer.cory'
     compileSdk 33
@@ -26,12 +25,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
+  
 
     }
     buildFeatures{
@@ -91,13 +91,12 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
-    //Firebase-UI Library
-    implementation 'com.firebaseui:firebase-ui-database:8.0.2'
+    //Room database
+    implementation("androidx.room:room-ktx:2.5.2")
+    annotationProcessor("androidx.room:room-compiler:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
 
-    //Android Paging Libray
+    //Google authur
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 
-
-    //Firebase Pagination Library
-
-    implementation 'androidx.paging:paging-runtime-ktx:3.2.0'
 }

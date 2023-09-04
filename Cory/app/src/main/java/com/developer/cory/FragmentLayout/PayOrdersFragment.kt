@@ -242,7 +242,7 @@ class PayOrdersFragment : Fragment() {
         order.status = EnumOrder.CHOXACNHAN.name
         order.idUser = Temp.user?.id
 
-        ordersService.addOrder(order){b ->
+        ordersService.addOrderRel(order){b ->
             if(b){
                 context?.let { it1 ->
                     pushNotification().sendNotification(

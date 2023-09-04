@@ -7,6 +7,7 @@ class Account {
     var password:String?= null
     var phanQuyen:String ?= null
     var numberXu:Int = 0
+    var email:String?=null
 
     constructor()
 
@@ -15,21 +16,12 @@ class Account {
         this.password = password
     }
 
-    constructor(numberPhone: String?, password: String?, phanQuyen: String?) {
+    constructor(numberPhone: String?,email:String?, password: String?) {
         this.numberPhone = numberPhone
         this.password = password
-        this.phanQuyen = phanQuyen
-
+        this.phanQuyen = "Customer"
+        this.email = email
     }
 
-
-    fun checkNumberPhone():Boolean{
-        return !TextUtils.isEmpty(numberPhone) && numberPhone?.length!! >=10
-    }
-
-    fun checkPassword():Boolean
-    {
-        return !TextUtils.isEmpty(password) && password?.length!! >=6
-    }
 
 }

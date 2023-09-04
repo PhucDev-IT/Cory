@@ -1,5 +1,6 @@
 package com.developer.cory.Activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.developer.cory.Model.CartModel
 import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.Temp
 import com.developer.cory.R
+import com.developer.cory.database.ProductDatabase
 import com.developer.cory.databinding.ActivityShowDetailsProductBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -36,6 +38,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
     private lateinit var lsChooseSideDishes: ArrayList<String>
     private var isChooseClassify: String = ""
     private var priceOfSize:Double = 1.0
+    private var isLoveProduct:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +80,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
         val radioButtonLayout = R.layout.viewholder_classify_product
 
         var index = 0
-        product.listSize?.forEach { (key, value) ->
+        product.classify?.forEach { (key, value) ->
             val radioButton =
                 inflater.inflate(radioButtonLayout, binding.radioGroup, false) as RadioButton
 
@@ -87,7 +90,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
 
                     isChooseClassify = buttonView.text.toString()   //Những sản phẩm mua thêm save firebase
 
-                    priceOfSize = product.listSize!![buttonView.text.toString()] as Double
+                    priceOfSize = product.classify!![buttonView.text.toString()] as Double
 
                     binding.tvPrice.text = FormatCurrency.numberFormat.format(priceOfSize)
                     totalMoney = (numberBuyProduct * priceOfSize) + sumMoneySideDishes
@@ -133,6 +136,7 @@ class ShowDetailsProductActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun handleEvent() {
         binding.btnClose.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()

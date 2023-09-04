@@ -9,10 +9,14 @@ import android.widget.Toast
 
 import com.example.cory_admin.Model.Product
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 class Product_Service(private val db:FirebaseFirestore)  {
+
+
+    val maxSize:Long = 10
 
 
 
@@ -63,21 +67,53 @@ class Product_Service(private val db:FirebaseFirestore)  {
     }
 
 
-    fun getDataByCategory(idCategory:String,callback:(list:List<Product>)->Unit){
+    fun getFirstPage(idCategory:String,callback:(list:List<Product>,lastProductKey:DocumentSnapshot?)->Unit){
+
         db.collection("Products").whereEqualTo("idCategory",idCategory)
-            .get()
-            .addOnSuccessListener {documents ->
-                var list = mutableListOf<Product>()
-                for(document in documents ){
-                    var product = document.toObject(Product::class.java)
-                    Log.d(TAG,"Values: $product")
-                    product.id = document.id
-                    list.add(product)
+            .limit(maxSize).get()
+            .addOnSuccessListener {snapshotDocument ->
+
+                if(!snapshotDocument.isEmpty){
+                    val lastIdProduct = snapshotDocument.documents[snapshotDocument.size()-1]
+
+                    var list = mutableListOf<Product>()
+                    for(document in snapshotDocument ){
+
+                        var product = document.toObject(Product::class.java)
+                        product.id = document.id
+                        list.add(product)
+                    }
+                    callback(list,lastIdProduct)
                 }
-                callback(list)
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
+            }
+        callback(emptyList(),null)
+    }
+
+    fun getNextPage(idCategory:String,lastIdProduct:DocumentSnapshot?,callback:(list:List<Product>,lastProductKey:DocumentSnapshot?)->Unit){
+        db.collection("Products").whereEqualTo("idCategory",idCategory).orderBy("price")
+            .startAfter(lastIdProduct)
+            .limit(maxSize).get()
+            .addOnSuccessListener {snapshotDocument ->
+
+                if(!snapshotDocument.isEmpty){
+                    val lastProductKey = snapshotDocument.documents[snapshotDocument.size()-1]
+
+                    var list = mutableListOf<Product>()
+                    for(document in snapshotDocument ){
+
+                        var product = document.toObject(Product::class.java)
+                        product.id = document.id
+                        list.add(product)
+                    }
+                    callback(list,lastProductKey)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+                callback(emptyList(),null)
             }
     }
 

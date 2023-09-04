@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_signUpFragment_to_verifyOtpFragment"
             app:destination="@id/verifyOtpFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
     </fragment>
     <fragment
         android:id="@+id/verifyOtpFragment"
@@ -28,4 +31,9 @@
         android:name="com.developer.cory.FragmentLayout.RegisterCompletedFragment"
         android:label="fragment_register_completed"
         tools:layout="@layout/fragment_register_completed" />
+    <fragment
+        android:id="@+id/verifyEmailFragment"
+        android:name="com.developer.cory.FragmentLayout.VerifyEmailFragment"
+        android:label="fragment_verify_email"
+        tools:layout="@layout/fragment_verify_email" />
 </navigation>

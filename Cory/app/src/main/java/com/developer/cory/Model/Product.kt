@@ -1,8 +1,12 @@
 package com.developer.cory.Model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.Serializable
 
+
 class Product : Serializable {
+
     private var _id: String? = null
     var id: String?
         get() = _id
@@ -34,14 +38,8 @@ class Product : Serializable {
         get() = _description
         set(value) { _description = value}
 
-
-    private var _listSize:MutableMap<String,Double>?=null
-    var listSize:MutableMap<String,Double>?
-        get() = _listSize
-        set(value) {_listSize = value}
-
-    private var _classify:String?=null
-    var classify:String?
+    private var _classify:Map<String,Double>?=null
+    var classify:Map<String,Double>?
         get() = _classify
         set(value) {_classify = value}
 
@@ -62,7 +60,7 @@ class Product : Serializable {
     }
 
     override fun toString(): String {
-        return "Product(_id=$_id, _nameProduct=$_nameProduct, _img_url=$_img_url, _price=$_price, _description=$_description, _listSize=$_listSize, _sideDishes=$_sideDishes)"
+        return "Product(_id=$_id, _nameProduct=$_nameProduct, _img_url=$_img_url, _price=$_price, _description=$_description, _classify=$_classify, _sideDishes=$_sideDishes, _idCategory=$_idCategory)"
     }
 
 

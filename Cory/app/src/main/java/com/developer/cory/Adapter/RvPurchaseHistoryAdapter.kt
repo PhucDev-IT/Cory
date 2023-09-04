@@ -1,7 +1,6 @@
 package com.developer.cory.Adapter
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.developer.cory.Interface.ClickObjectInterface
@@ -23,8 +23,7 @@ class RvPurchaseHistoryAdapter( private val onClick: ClickObjectInterface<Order>
     private var list: MutableList<Order> = ArrayList()
 
      @SuppressLint("NotifyDataSetChanged")
-     fun setData(lst:List<Order>){
-         Log.d(TAG,"SIZE: ${lst.size}")
+     fun setData(lst: List<Order>){
         this.list.addAll(lst)
         notifyDataSetChanged()
     }

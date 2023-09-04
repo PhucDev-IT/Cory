@@ -89,8 +89,8 @@ class RvItemCartAdapter(private var list: List<CartModel>, private val onClick: 
             cartM.totalMoney += (cartM.quantity.toDouble() * cartM.product?.price!!)
 
 
-            if (cartM.product!!.listSize?.contains(cartM.classify) == true) {
-                val price = cartM.product?.listSize?.get(cartM.classify)
+            if (cartM.product!!.classify?.contains(cartM.classify) == true) {
+                val price = cartM.product?.classify?.get(cartM.classify)
                 if (price != null) {
                     cartM.totalMoney = (price * cartM.quantity)
                 }

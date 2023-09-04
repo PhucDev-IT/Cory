@@ -173,33 +173,36 @@ class AddProductActivity : AppCompatActivity(), OnClickListener {
             binding.edtPrice.error = "Để trống sẽ bị lỗ"
         } else if (binding.edtDescription.text.toString().trim().isEmpty()) {
             binding.edtDescription.error = "Thiếu mô tả"
-        }
-        progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Chờ 1 tí")
-        progressDialog.show()
+        }else {
+            progressDialog = ProgressDialog(this)
+            progressDialog.setTitle("Chờ 1 tí")
+            progressDialog.show()
 
-        var product = Product()
-        product.name = binding.edtNameProduct.text.toString().trim()
-        product.price = binding.edtPrice.text.toString().toDouble()
-        product.description =binding.edtDescription.text.toString().trim()
-        if(listClassify.isNotEmpty()){
-            product.classify = listClassify
-        }
-        if(listSideDishes.isNotEmpty()){
-            product.sideDishes = listSideDishes
-        }
-        if(idCategory!=null){
-            product.idCategory = idCategory
-        }
-
-        urlProduct?.let { Product_Service(db).addProduct(it,product){b->
-            progressDialog.dismiss()
-            if(b){
-                Toast.makeText(this,"Thêm thành công",Toast.LENGTH_SHORT).show()
-                resetData()
+            var product = Product()
+            product.name = binding.edtNameProduct.text.toString().trim()
+            product.price = binding.edtPrice.text.toString().toDouble()
+            product.description = binding.edtDescription.text.toString().trim()
+            if (listClassify.isNotEmpty()) {
+                product.classify = listClassify
             }
-        } }
+            if (listSideDishes.isNotEmpty()) {
+                product.sideDishes = listSideDishes
+            }
+            if (idCategory != null) {
+                product.idCategory = idCategory
+            }
 
+            urlProduct?.let {
+                Product_Service(db).addProduct(it, product) { b ->
+                    progressDialog.dismiss()
+                    if (b) {
+                        Toast.makeText(this, "Thêm thành công", Toast.LENGTH_SHORT).show()
+                        resetData()
+                    }
+                }
+            }
+
+        }
     }
 
     private fun resetData(){

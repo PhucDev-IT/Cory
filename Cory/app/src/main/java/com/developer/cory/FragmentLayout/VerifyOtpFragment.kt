@@ -21,6 +21,7 @@ import androidx.navigation.Navigation
 import com.developer.cory.Model.Account
 import com.developer.cory.Model.User
 import com.developer.cory.R
+import com.developer.cory.Service.AccountService
 import com.developer.cory.ViewModel.RegisterViewModel
 
 import com.developer.cory.databinding.FragmentVerifyOtpBinding
@@ -139,44 +140,18 @@ class VerifyOtpFragment : Fragment() {
     private fun saveAccount() {
 
         val account =
-            Account(shareViewModel.numberPhone.value, shareViewModel.password.value, "customer")
-
-        db.collection("account").document(shareViewModel.numberPhone.value!!).set(account)
-            .addOnCompleteListener {
-                saveUser(shareViewModel.numberPhone.value!!){b ->
-                    if(b){
-                        navController.navigate(R.id.action_verifyOtpFragment_to_registerCompletedFragment)
-                    }
-                }
-
-            }
-            .addOnFailureListener { err ->
+            Account(shareViewModel.numberPhone.value,null, shareViewModel.password.value)
+        val user = User(shareViewModel.fullName.value!!,account.numberPhone!!)
+        AccountService(db).addAccount(account,user){b ->
+            if(b){
+                navController.navigate(R.id.action_verifyOtpFragment_to_registerCompletedFragment)
+            }else{
                 Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
-                Log.e(ContentValues.TAG, "$err.message")
             }
+        }
 
     }
 
-    //Lưu thông tin người dùng
-    private fun saveUser(numberPhone: String, callback: (b: Boolean) -> Unit) {
-        val user = User(numberPhone,shareViewModel.fullName.value!!)
-        db.collection("Users").add(user)
-            .addOnCompleteListener {
-                Toast.makeText(context, "Đăng ký thành công", Toast.LENGTH_SHORT).show()
-                callback(true)
-            }
-            .addOnFailureListener {
-                Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
-                db.collection("account").document(numberPhone).delete()
-                    .addOnCompleteListener {
-                        Log.d("Success: ", "Xóa account: $numberPhone")
-                    }
-                    .addOnFailureListener { err ->
-                        Log.e("Lỗi: ", "Không thể xóa: ${err.message} ")
-                    }
-                callback(false)
-            }
-    }
 
     //Set up view input otp
     //Set up input OTP

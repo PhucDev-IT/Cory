@@ -89,10 +89,10 @@ class MainActivity : AppCompatActivity() {
     //Lấy thông tin người dùng
     private fun getDataUser()
     {
-        val numberPhone = intent.getStringExtra("key_phone")
+        val idAccount = intent.getStringExtra("id_Account")
 
         val db = Firebase.firestore
-        db.collection("Users").whereEqualTo("numberPhone",numberPhone)
+        db.collection("Users").whereEqualTo("idAccount",idAccount)
             .get()
             .addOnSuccessListener { documents ->
                 if(!documents.isEmpty) {

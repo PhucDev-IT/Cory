@@ -14,6 +14,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -50,6 +53,27 @@ class OrdersService {
             }
     }
 
+    fun testReal(callback: (list: List<Order>) -> Unit) {
+        var orderList = mutableListOf<Order>()
+
+        db.document(STATUS_ORDERS).collection("ItemsOrder")
+            .whereEqualTo("status", EnumOrder.CHOXACNHAN.name).orderBy("orderDate")
+            .startAfter(lastOrderKey).limit(maxSize)
+            .addSnapshotListener { value, error ->
+
+                if (value != null) {
+                    for (document in value) {
+                        var order = document.toObject(Order::class.java)
+                        order.idOrder = document.id
+                        orderList.add(order)
+                    }
+
+                    callback(orderList)
+                }
+
+
+            }
+    }
 
     fun getAllOrderDangChoXuLy(callback: (list: List<Order>) -> Unit) {
         var orderList = mutableListOf<Order>()
@@ -109,40 +133,86 @@ class OrdersService {
         order.idUser?.let {
             removeOrder(it) { b ->
                 if (b) {
-                    db.document(PURCHASED_HISTORY).collection(it).add(order).addOnSuccessListener {
-                        callback(true)
-                    }.addOnFailureListener { err ->
-                        Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
-                        callback(false)
-                    }
-                }else{
+                    db.document(PURCHASED_HISTORY).collection(it).add(order)
+                        .addOnSuccessListener {
+                            callback(true)
+                        }.addOnFailureListener { err ->
+                            Log.e(TAG, "Có lỗi xảy ra khi load order: ${err.message}")
+                            callback(false)
+                        }
+                } else {
                     callback(false)
                 }
             }
         }
     }
 
-    fun paginationReal(callback: (list: List<Order>) -> Unit) {
-        val dbef = FirebaseDatabase.getInstance().getReference("Orders")
-        val query = dbef
-            .orderByValue()
-            .equalTo("status", EnumOrder.CHOXACNHAN.name)
-            .startAfter("-Nb4l5EX0x9mx32J_X6r") // Sử dụng startAfter() nếu có lastOrderKey
-            .limitToFirst(6)
+    private var currentUser: String? = null
+    private var lastIdOrder: String = ""
 
-        query.get()
-            .addOnSuccessListener { snapShot ->
+    fun paginationReal(callback: (list: List<Order>) -> Unit) {
+        var maxSize: Int = 5
+        val dbRef = FirebaseDatabase.getInstance().getReference("Orders")
+        val query = dbRef.orderByKey().limitToFirst(5)
+
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 var list = mutableListOf<Order>()
-                for (child in snapShot.children) {
-                    val orders = child.getValue(Order::class.java)
-                    list.add(orders!!)
-                    Log.d(TAG, "Key: $orders")
+
+                for (idUser in snapshot.children) {
+                    if (currentUser != null && currentUser != idUser.key) {
+                        // Đã chuyển sang người dùng khác, reset lastIdOrder
+                        lastIdOrder = ""
+                    }
+                    currentUser = idUser.key
+
+                    for (values in idUser.children) {
+                        val orderId = values.key!!
+
+                        if (orderId > lastIdOrder) {
+                            val order = values.getValue(Order::class.java)
+                            list.add(order!!)
+                            Log.d(TAG, "$order")
+
+                            if (list.size >= 5) {
+                                lastIdOrder = orderId
+                                break
+                            }
+                        }
+                    }
                 }
                 callback(list)
             }
-            .addOnFailureListener { error ->
-                Log.e(TAG, "LỖI: ${error.message}")
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e(TAG, "LỖI: ${databaseError.message}")
             }
+        })
+    }
+
+
+    private fun getPage2(callback: (list: List<Order>) -> Unit) {
+        val dbef = FirebaseDatabase.getInstance().getReference("Orders")
+        val query = dbef
+            .limitToFirst(5)
+
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var list = mutableListOf<Order>()
+                for (idUser in snapshot.children) {
+                    var usersId = idUser.key
+                    for (values in idUser.children) {
+                        val order = values.getValue(Order::class.java)
+                        list.add(order!!)
+                    }
+                }
+                callback(list)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
     }
 
 

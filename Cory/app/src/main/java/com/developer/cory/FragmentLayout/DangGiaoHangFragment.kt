@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Activity.PurchaseHistoryDetailsActivity
 import com.developer.cory.Adapter.RvPurchaseHistoryAdapter
 import com.developer.cory.Interface.ClickObjectInterface
-import com.developer.cory.Interface.RvInterface
 import com.developer.cory.Model.EnumOrder
 import com.developer.cory.Model.Order
 import com.developer.cory.Model.PaginationScrollListener
@@ -73,21 +72,21 @@ class DangGiaoHangFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun getFirstPage() {
 
-        isLoading = true
-        Handler().postDelayed({
-            ordersService.getFirsPage(EnumOrder.DANGGIAOHANG.name) { list ->
-                adapter.setData(list)
-                adapter.notifyDataSetChanged()
-                if (list.isEmpty()) {
-                   // binding.lnChuaCoDonHang.visibility = View.VISIBLE
-                } else if (list.size < 5) {
-                    isLastPage = true
-                    Toast.makeText(context, "Hết dữ liệu", Toast.LENGTH_SHORT).show()
-                }
-            }
-            isLoading = false
-          //  binding.progressBarLoading.visibility = View.GONE
-        }, 1500)
+//        isLoading = true
+//        Handler().postDelayed({
+//            ordersService.getFirsPage(EnumOrder.DANGGIAOHANG.name) { list ->
+//                adapter.setData(list)
+//                adapter.notifyDataSetChanged()
+//                if (list.isEmpty()) {
+//                   // binding.lnChuaCoDonHang.visibility = View.VISIBLE
+//                } else if (list.size < 5) {
+//                    isLastPage = true
+//                    Toast.makeText(context, "Hết dữ liệu", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            isLoading = false
+//          //  binding.progressBarLoading.visibility = View.GONE
+//        }, 1500)
 
     }
 

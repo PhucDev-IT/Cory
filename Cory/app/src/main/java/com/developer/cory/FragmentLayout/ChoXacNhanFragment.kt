@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Activity.PurchaseHistoryDetailsActivity
 import com.developer.cory.Adapter.RvPurchaseHistoryAdapter
@@ -18,6 +19,7 @@ import com.developer.cory.Model.EnumOrder
 import com.developer.cory.Model.Order
 import com.developer.cory.Model.PaginationScrollListener
 import com.developer.cory.Service.OrdersService
+import com.developer.cory.ViewModel.PurchaseHistoryViewModel
 import com.developer.cory.databinding.FragmentChoXacNhanBinding
 
 
@@ -29,6 +31,7 @@ class ChoXacNhanFragment : Fragment() {
     private var isLoading: Boolean = false
     private var isLastPage: Boolean = false
 
+    private lateinit var viewModel: PurchaseHistoryViewModel
     private lateinit var adapter: RvPurchaseHistoryAdapter
 
 
@@ -39,7 +42,15 @@ class ChoXacNhanFragment : Fragment() {
     ): View? {
         _binding = FragmentChoXacNhanBinding.inflate(inflater, container, false)
 
+        viewModel = ViewModelProvider(this)[PurchaseHistoryViewModel::class.java]
 
+
+        initView()
+        getFirstPage()
+        return binding.root
+    }
+
+    private fun initView(){
         val linearLayoutManager: LinearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrders.layoutManager = linearLayoutManager
@@ -58,7 +69,6 @@ class ChoXacNhanFragment : Fragment() {
             override fun loadMoreItem() {
                 isLoading = true
                 loadNext()
-                Toast.makeText(context, "Cuộn", Toast.LENGTH_SHORT).show()
             }
 
             override fun isLoading(): Boolean {
@@ -69,35 +79,31 @@ class ChoXacNhanFragment : Fragment() {
                 return isLastPage
             }
         })
-
-        getFirstPage()
-        return binding.root
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun getFirstPage() {
-        binding.progressBarLoading.visibility = View.VISIBLE
+        binding.swipRefresh.isRefreshing = true
         isLoading = true
         Handler().postDelayed({
             ordersService.getFirsPage(EnumOrder.CHOXACNHAN.name) { list ->
-                adapter.setData(list)
-                adapter.notifyDataSetChanged()
-                if (list.isEmpty()) {
+                list?.value?.let { adapter.setData(it) }
+                if (list?.value?.isEmpty() == true) {
                     binding.lnChuaCoDonHang.visibility = View.VISIBLE
-                } else if (list.size < 5) {
+                } else if (list?.value?.size!! < 5) {
                         isLastPage = true
                         Toast.makeText(context, "Hết dữ liệu", Toast.LENGTH_SHORT).show()
                     }
             }
             isLoading = false
-            binding.progressBarLoading.visibility = View.GONE
+            binding.swipRefresh.isRefreshing = false
         }, 1500)
 
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun loadNext() {
-        binding.progressBarLoading.visibility = View.VISIBLE
+        binding.swipRefresh.isRefreshing = true
 
         Handler().postDelayed({
             ordersService.loadNextPage(EnumOrder.CHOXACNHAN.name) { list ->
@@ -109,9 +115,11 @@ class ChoXacNhanFragment : Fragment() {
             }
 
             isLoading = false
-            binding.progressBarLoading.visibility = View.GONE
+            binding.swipRefresh.isRefreshing = false
         }, 1500)
     }
+
+
 
 }
 

@@ -12,7 +12,7 @@ import com.example.cory_admin.Model.Category
 import com.example.cory_admin.R
 
 
-class RvCategoryAdapter(private val list: List<Category>, private val onClick: RvInterface) :
+class RvCategoryAdapter(private val list: List<Category>, private val onClick: RvInterface, var pos:Int) :
     RecyclerView.Adapter<RvCategoryAdapter.viewHolder>() {
 
 
@@ -37,7 +37,15 @@ class RvCategoryAdapter(private val list: List<Category>, private val onClick: R
             Glide.with(context).load(list[position].img_url).into(img)
             name.text = list[position].nameCategory
 
+            //Mặc định ban đầu sẽ chọn category đầu tiên
+            if(pos == position){
+                holder.itemView.setBackgroundResource(R.drawable.category_selected)
+                holderTemp = holder
+                onClick.onClickListener(pos)
 
+            }else{
+                holder.itemView.setBackgroundResource(0)
+            }
 
             //Lắng nghe sự kiện người dùng
             holder.itemView.setOnClickListener {

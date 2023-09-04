@@ -1,4 +1,5 @@
 package com.developer.cory.Activity
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ class RvProductInSearchApdapter(private var list:List<Product>, private val onCl
     class viewHolder(itemView:View):RecyclerView.ViewHolder(itemView)
 
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(list: List<Product>){
         this.list = list
         notifyDataSetChanged()

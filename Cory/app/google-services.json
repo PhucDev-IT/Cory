@@ -1,8 +1,8 @@
 {
   "project_info": {
     "project_number": "436327015042",
-    "project_id": "cory-24261",
     "firebase_url": "https://cory-24261-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cory-24261",
     "storage_bucket": "cory-24261.appspot.com"
   },
   "client": [
@@ -23,7 +23,44 @@
           }
         },
         {
-          "client_id": "436327015042-eibmc4gn4pu8t919jpepoq2ttn62103h.apps.googleusercontent.com",
+          "client_id": "436327015042-ghg1dsc4958fv6a9cj7ttccvsq0c1g2i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpo1i7twDCH-As4AQoL0ibQRwH-ADVF4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436327015042-eibmc4gn4pu8t919jpepoq2ttn62103h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436327015042:android:ae07bcaaf652ae71450a9b",
+        "android_client_info": {
+          "package_name": "com.example.cory_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "436327015042-i788aeqrenjrm18pqatiav5vf0bcn107.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cory_admin",
+            "certificate_hash": "daab2f5449ae98b129e1bfc5c7cf255e673ff955"
+          }
+        },
+        {
+          "client_id": "436327015042-ghg1dsc4958fv6a9cj7ttccvsq0c1g2i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

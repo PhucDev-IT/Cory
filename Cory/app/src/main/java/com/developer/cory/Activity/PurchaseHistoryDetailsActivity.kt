@@ -1,9 +1,11 @@
 package com.developer.cory.Activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.developer.cory.Adapter.RvPurchaseHistoryDetailsAdapter
@@ -12,11 +14,13 @@ import com.developer.cory.Model.FormatCurrency
 
 import com.developer.cory.Model.Order
 import com.developer.cory.Model.TypeVoucher
+import com.developer.cory.Service.OrdersService
 import com.developer.cory.databinding.ActivityPruchaseHistoryDetailsBinding
 import java.text.SimpleDateFormat
 
 class PurchaseHistoryDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPruchaseHistoryDetailsBinding
+    private lateinit var order:Order
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +34,23 @@ class PurchaseHistoryDetailsActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             onBackPressed()
         }
+
+        binding.btnHuyDonHang.setOnClickListener {
+            order.idOrder?.let { it1 -> OrdersService().huyDonHang(it1){b ->
+                if(b){
+                    Toast.makeText(this,"Hủy đơn hàng thành công",Toast.LENGTH_SHORT).show()
+                    onBackPressed()
+                }else{
+                    Toast.makeText(this,"Có lỗi xảy ra",Toast.LENGTH_SHORT).show()
+                }
+            } }
+        }
     }
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun initView() {
         val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
-        val order: Order = intent.getSerializableExtra("key_order") as Order
+        order = intent.getSerializableExtra("key_order") as Order
 
         val tongTienSanPham: Double? = order.tongTienSanPham
         val tongPhiVanChuyen: Double? = order.tongPhiVanChuyen

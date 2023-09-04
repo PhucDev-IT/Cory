@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentLayout.SignUpWithEmailFragment">
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:ignore="UselessParent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="13dp"
+            android:textColorHint="#757573">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_person_orange"
+                android:drawablePadding="10dp"
+                android:hint="Họ và tên"
+                android:inputType="textPersonName" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/texInputPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="13dp"
+            android:textColorHint="#757573">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/baseline_email_24"
+                android:drawablePadding="10dp"
+                android:hint="Nhập email"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/texInputPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="13dp"
+            android:textColorHint="#757573"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/red">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="10dp"
+                android:hint="Nhập mật khẩu"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/texInputConfirPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="13dp"
+            android:textColorHint="#757573"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/red">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_password"
+                android:drawablePadding="10dp"
+                android:hint="Nhập lại mật khẩu"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_violet_radius_4dp"
+            android:text="ĐĂNG KÝ"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+
+</FrameLayout>

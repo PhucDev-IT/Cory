@@ -12,18 +12,47 @@ import android.widget.Toast
 import com.developer.cory.MainActivity
 import com.developer.cory.Model.Account
 import com.developer.cory.Model.Temp
+import com.developer.cory.R
+import com.developer.cory.Service.AccountService
 import com.developer.cory.data_local.DataLocalManager
 import com.developer.cory.databinding.ActivityLoginBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
+    companion object {
+        private const val RC_SIGN_IN = 20
+    }
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var mGoogleSignInClient : GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
+
+        var gso:GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this,gso)
+
+
+
+
         addEvents()
         initView()
     }
@@ -31,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
     private fun initView(){
         val account = DataLocalManager.getAccount()
         if (account != null) {
-            binding.edtNumberPhone.setText(account.numberPhone)
+            binding.edtTaiKhoan.setText(account.numberPhone)
             binding.edtPassword.setText(account.password)
         }
     }
@@ -57,45 +86,34 @@ class LoginActivity : AppCompatActivity() {
         binding.chkbSaveInfor.setOnClickListener{
 
         }
+
+        binding.logInWithGoogle.setOnClickListener{
+
+        }
     }
 
 
     //Kiểm tra tài khoản
     private fun existsAccount(){
 
-        val numberPhone = binding.edtNumberPhone.text.toString().trim()
+        val taiKhoan = binding.edtTaiKhoan.text.toString().trim()
         val password = binding.edtPassword.text.toString().trim()
 
-        val account = Account(numberPhone,password)
-        if (!account.checkNumberPhone() || !account.checkPassword()) {
-            Toast.makeText(this,"Tài khoản hoặc mật khẩu không chinnh xác",Toast.LENGTH_SHORT).show()
-            return
+        val db = FirebaseFirestore.getInstance()
+        AccountService(db).login(taiKhoan,password){b ->
+            if(b){
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("id_Account",taiKhoan)
+                startActivity(intent)
+                finishAffinity()
+            }else{
+                Toast.makeText(this,"Tài khoản hoặc mật khẩu không chính xác",Toast.LENGTH_SHORT).show()
+            }
         }
 
-        val db = FirebaseFirestore.getInstance()
-        db.collection("account").document(numberPhone)
-            .get().addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    val fieldValue = documentSnapshot.getString("password")
-                    if(password == fieldValue){
-
-                        Temp.account = documentSnapshot.toObject(Account::class.java)!!
-
-                        val intent = Intent(this,MainActivity::class.java)
-                        intent.putExtra("key_phone",numberPhone)
-                        startActivity(intent)
-                        finishAffinity()
-                    }else{
-                        Toast.makeText(this,"Mật khẩu không chính xác",Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this,"Tài khoản không tồn tại",Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Lỗi: ","${exception.message}")
-            }
     }
+
+    //Kiểm tra taì khaonr
 
 
     //ẩn bàn phím ảo
