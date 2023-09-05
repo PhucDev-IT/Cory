@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.developer.cory.FragmentLayout.DangGiaoHangFragment
 import com.developer.cory.FragmentLayout.LichSuMuaHangFragment
 import com.developer.cory.FragmentLayout.ChoXacNhanFragment
+import com.developer.cory.FragmentLayout.DonHangDaHuyFragment
 
 class ViewPagerPurchasedAdapter : FragmentStateAdapter {
     constructor(fragmentActivity: FragmentActivity) : super(fragmentActivity)
@@ -20,6 +21,7 @@ class ViewPagerPurchasedAdapter : FragmentStateAdapter {
             0 -> ChoXacNhanFragment()
             1-> DangGiaoHangFragment()
             2-> LichSuMuaHangFragment()
+            3-> DonHangDaHuyFragment()
             else -> LichSuMuaHangFragment()
         }
     }

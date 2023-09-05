@@ -3,10 +3,8 @@ package com.developer.cory.FragmentLayout
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +13,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.developer.cory.Activity.RvProductApdapter
@@ -23,17 +20,13 @@ import com.developer.cory.Activity.SearchActivity
 import com.developer.cory.Activity.ShowDetailsProductActivity
 import com.developer.cory.Adapter.RvCategoryHome
 import com.developer.cory.Interface.ClickObjectInterface
-import com.developer.cory.Model.Category
 import com.developer.cory.Model.Product
 import com.developer.cory.Interface.RvInterface
 import com.developer.cory.Model.PaginationScrollListener
 import com.developer.cory.R
 import com.developer.cory.Service.CategoryService
 import com.developer.cory.Service.Product_Service
-import com.developer.cory.database.ProductDatabase
 import com.developer.cory.databinding.FragmentHomeBinding
-import com.developer.cory.databinding.ShimmerLayoutHomeBinding
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 

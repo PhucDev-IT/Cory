@@ -46,6 +46,7 @@ class AccountService(private val db: FirebaseFirestore) {
                     val fieldValue = documentSnapshot.getString("password")
                     if(password == fieldValue){
                         Temp.account = documentSnapshot.toObject(Account::class.java)!!
+                        callback(true)
                     }else{
                         callback(false)
                     }

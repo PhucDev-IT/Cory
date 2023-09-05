@@ -21,10 +21,12 @@ class RegisterViewModel : ViewModel() {
     private val _verificationId = MutableLiveData<String>()
     var verificationId: LiveData<String> = _verificationId
 
-    private val _isAllowSignUp = MutableLiveData(false)
-    var isAllowSignUp: LiveData<Boolean> = _isAllowSignUp
+    private val _isAllowSignUpWithPhone = MutableLiveData(false)
+    var isAllowSignUpWithPhone: LiveData<Boolean> = _isAllowSignUpWithPhone
 
-    var signUpWith:String?=null
+    private val _isAllowSignUpWithEmail = MutableLiveData(false)
+    var isAllowSignUpWithEmail: LiveData<Boolean> = _isAllowSignUpWithEmail
+
 
     fun setFullName(name: String) {
         _fullName.value = name
@@ -52,20 +54,11 @@ class RegisterViewModel : ViewModel() {
         _verificationId.value = pass
     }
 
-    fun updateIsAllowSignUp(b:Boolean,key:String){
-        _isAllowSignUp.value = b
-        signUpWith = key
-
+    fun isAllowSignUpWithPhone(b:Boolean){
+        _isAllowSignUpWithPhone.value = b
     }
 
-    fun reset(){
-        _fullName.value = ""
-        _numberPhone.value = ""
-        _email.value =""
-        _password.value = ""
-        _verificationId.value = ""
-        _isAllowSignUp.value = false
-
+    fun isAllowSignUpWithEmail(b:Boolean){
+        _isAllowSignUpWithEmail.value = b
     }
-
 }

@@ -136,7 +136,7 @@ class SignUpWithPhoneFragment : Fragment() {
                         customDialog.closeDialog()
                         // Save verification ID
                         shareViewModel.setVerificationId(verificationID)
-                        shareViewModel.updateIsAllowSignUp(true,"phone")
+                        shareViewModel.isAllowSignUpWithPhone(true)
                         binding.btnRegister.visibility = View.GONE
                     }
                 })

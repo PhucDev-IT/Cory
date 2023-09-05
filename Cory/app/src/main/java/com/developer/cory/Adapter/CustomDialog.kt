@@ -22,6 +22,8 @@ class CustomDialog(private val context: Context) {
         dialog.show()
     }
 
+
+
     fun closeDialog(){
         dialog.dismiss()
     }

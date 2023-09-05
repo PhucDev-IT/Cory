@@ -35,7 +35,6 @@ class SignUpFragment : Fragment() {
 
         binding.tabLayout.addOnTabSelectedListener(object  : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewModel.reset()
                 if (tab != null) {
                     binding.viewPager2.currentItem = tab.position
                 }
@@ -53,13 +52,15 @@ class SignUpFragment : Fragment() {
         })
 
 
-        viewModel.isAllowSignUp.observe(viewLifecycleOwner) { b ->
+        viewModel.isAllowSignUpWithPhone.observe(viewLifecycleOwner) { b ->
             if (b) {
                 binding.btnRegister.visibility = View.VISIBLE
-                if(viewModel.signUpWith.equals("email")){
-                    navController.navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
+            }
+        }
 
-                }
+        viewModel.isAllowSignUpWithEmail.observe(viewLifecycleOwner) { b ->
+            if (b) {
+                navController.navigate(R.id.action_signUpFragment_to_verifyEmailFragment)
             }
         }
 
@@ -74,10 +75,12 @@ class SignUpFragment : Fragment() {
 
     private fun handleClick(){
         binding.btnRegister.setOnClickListener {
-            if(viewModel.signUpWith.equals("phone")) {
                 navController.navigate(R.id.action_signUpFragment_to_verifyOtpFragment)
-            }
+
         }
     }
+
+
+
 
 }

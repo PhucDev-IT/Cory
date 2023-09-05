@@ -36,7 +36,7 @@ class PurchaseHistoryDetailsActivity : AppCompatActivity() {
         }
 
         binding.btnHuyDonHang.setOnClickListener {
-            order.idOrder?.let { it1 -> OrdersService().huyDonHang(it1){b ->
+            order.let { it1 -> OrdersService().huyDonHang(order){ b ->
                 if(b){
                     Toast.makeText(this,"Hủy đơn hàng thành công",Toast.LENGTH_SHORT).show()
                     onBackPressed()

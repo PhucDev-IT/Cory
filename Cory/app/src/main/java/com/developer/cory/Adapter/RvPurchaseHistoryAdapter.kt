@@ -24,6 +24,13 @@ class RvPurchaseHistoryAdapter( private val onClick: ClickObjectInterface<Order>
 
      @SuppressLint("NotifyDataSetChanged")
      fun setData(lst: List<Order>){
+        this.list.clear()
+         list.addAll(lst)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addData(lst:List<Order>){
         this.list.addAll(lst)
         notifyDataSetChanged()
     }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import com.developer.cory.Activity.LoginActivity
 import com.developer.cory.Activity.PurchaseHistoryActivity
 import com.developer.cory.Activity.RegisterActivity
@@ -37,6 +38,7 @@ class UserFragment : Fragment(),View.OnClickListener {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     private fun init() {
         if (Temp.user != null) {
             binding.btnLogout.visibility = View.VISIBLE
@@ -48,6 +50,8 @@ class UserFragment : Fragment(),View.OnClickListener {
                 binding.tvFullName.text = Temp.user!!.name
             }
         }
+
+        Temp.account?.numberXu?.let { binding.tvNumberXu.text = "$it xu" }
     }
 
 
@@ -87,7 +91,10 @@ class UserFragment : Fragment(),View.OnClickListener {
 
     @SuppressLint("CommitTransaction")
     fun convertScreen(view: View) {
-
+        if(Temp.user == null){
+            Toast.makeText(context,"Đăng nhập để thực hiện tác vụ này.",Toast.LENGTH_SHORT).show()
+            return
+        }
         when (view) {
             binding.lnLichSuMuaHang -> {
                 val intent = Intent(context,PurchaseHistoryActivity::class.java)

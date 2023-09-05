@@ -4,12 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/swipRefresh"
-    tools:context=".FragmentLayout.DangGiaoHangFragment">
-
+    tools:context=".FragmentLayout.DonHangDaHuyFragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOrder"
+            android:background="@color/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <LinearLayout
             android:id="@+id/lnHaveNotOrders"
@@ -27,18 +31,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chưa có đơn hàng"
+                android:text="Không khuyến khích hủy hàng"
                 android:layout_marginTop="10dp"
+                android:gravity="center"
                 android:padding="5dp"
                 android:textSize="20sp"
                 android:background="@drawable/btn_logout"/>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvOrders"
-            android:background="@color/background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
     </LinearLayout>
 

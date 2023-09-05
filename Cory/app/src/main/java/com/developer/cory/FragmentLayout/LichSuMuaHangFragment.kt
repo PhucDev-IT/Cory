@@ -1,60 +1,100 @@
 package com.developer.cory.FragmentLayout
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.developer.cory.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.developer.cory.Adapter.RvPurchaseHistoryAdapter
+import com.developer.cory.Interface.ClickObjectInterface
+import com.developer.cory.Model.Order
+import com.developer.cory.Model.PaginationScrollListener
+import com.developer.cory.Service.OrdersService
+import com.developer.cory.databinding.FragmentLichSuMuaHangBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LichSuMuaHangFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LichSuMuaHangFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+   private lateinit var _binding:FragmentLichSuMuaHangBinding
+    private val binding get() = _binding
+    private val ordersService = OrdersService()
+    private var isLoading: Boolean = false
+    private var isLastPage: Boolean = false
+    private lateinit var adapter: RvPurchaseHistoryAdapter
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_lich_su_mua_hang, container, false)
+        _binding = FragmentLichSuMuaHangBinding.inflate(inflater,container,false)
+        initView()
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LichSuMuaHangFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LichSuMuaHangFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun initView() {
+        adapter = RvPurchaseHistoryAdapter(object : ClickObjectInterface<Order> {
+            override fun onClickListener(t: Order) {
+
+            }
+        })
+
+
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.rvOrders.adapter = adapter
+        binding.rvOrders.layoutManager = linearLayoutManager
+
+        binding.rvOrders.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager) {
+            override fun loadMoreItem() {
+                loadNextOrder()
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+        })
+
+        getFirstListOrder()
+    }
+
+    private fun getFirstListOrder() {
+        isLoading = true
+        binding.swipRefresh.isRefreshing = true
+        Handler().postDelayed({
+            ordersService.getFirstListPurchasedOrder { list->
+                if (list.isNotEmpty()) {
+                    binding.rvOrders.visibility = View.VISIBLE
+                    binding.lnHaveNotOrders.visibility = View.GONE
+                    adapter.setData(list)
+
+                } else {
+                    binding.lnHaveNotOrders.visibility = View.VISIBLE
+                    binding.rvOrders.visibility = View.GONE
+                    isLastPage = true
                 }
             }
+            isLoading = false
+            binding.swipRefresh.isRefreshing = false
+        }, 1500)
+    }
+
+    private fun loadNextOrder() {
+        isLoading = true
+        binding.swipRefresh.isRefreshing = true
+        Handler().postDelayed({
+            ordersService.loadNextListPurchasedOrders {
+                adapter.setData(it)
+
+                if (it.isEmpty()) {
+                    isLastPage = true
+                }
+            }
+            isLoading = false
+            binding.swipRefresh.isRefreshing = false
+        }, 1500)
     }
 }

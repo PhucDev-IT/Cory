@@ -2,7 +2,6 @@ package com.developer.cory.Activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.RadioButton
@@ -17,14 +16,11 @@ import com.developer.cory.Model.CartModel
 import com.developer.cory.Model.FormatCurrency
 import com.developer.cory.Model.Temp
 import com.developer.cory.R
-import com.developer.cory.database.ProductDatabase
 import com.developer.cory.databinding.ActivityShowDetailsProductBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.text.NumberFormat
-import java.util.Locale
 
 
 class ShowDetailsProductActivity : AppCompatActivity() {

@@ -1,8 +1,13 @@
 package com.developer.cory.Model
 
 import android.text.TextUtils
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity
 class Account {
+    @PrimaryKey
+    lateinit var userName:String
     var numberPhone:String ?= null
     var password:String?= null
     var phanQuyen:String ?= null

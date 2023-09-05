@@ -47,6 +47,7 @@ class ChoXacNhanFragment : Fragment() {
 
         initView()
         getFirstPage()
+        handleEvent()
         return binding.root
     }
 
@@ -86,14 +87,18 @@ class ChoXacNhanFragment : Fragment() {
         binding.swipRefresh.isRefreshing = true
         isLoading = true
         Handler().postDelayed({
-            ordersService.getFirsPage(EnumOrder.CHOXACNHAN.name) { list ->
-                list?.value?.let { adapter.setData(it) }
+            ordersService.getFirstChoXacNhan{ list ->
+                list?.value?.let {
+                    adapter.setData(it)
+                }
                 if (list?.value?.isEmpty() == true) {
                     binding.lnChuaCoDonHang.visibility = View.VISIBLE
-                } else if (list?.value?.size!! < 5) {
-                        isLastPage = true
-                        Toast.makeText(context, "Hết dữ liệu", Toast.LENGTH_SHORT).show()
-                    }
+                    isLastPage = true
+                }
+//                else if (list?.value?.size!! <=0 ) {
+//                        isLastPage = true
+//                        Toast.makeText(context, "Hết dữ liệu", Toast.LENGTH_SHORT).show()
+//                    }
             }
             isLoading = false
             binding.swipRefresh.isRefreshing = false
@@ -104,12 +109,13 @@ class ChoXacNhanFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     fun loadNext() {
         binding.swipRefresh.isRefreshing = true
-
         Handler().postDelayed({
-            ordersService.loadNextPage(EnumOrder.CHOXACNHAN.name) { list ->
-                adapter.setData(list)
-                adapter.notifyDataSetChanged()
-                if (list.isEmpty()) {
+            ordersService.loadNextListChoXacNhan { list ->
+                list?.value?.let {
+                    adapter.addData(it)
+                }
+
+                if (list == null) {
                     isLastPage = true
                 }
             }
@@ -119,6 +125,12 @@ class ChoXacNhanFragment : Fragment() {
         }, 1500)
     }
 
+
+    private fun handleEvent(){
+        binding.swipRefresh.setOnRefreshListener {
+            getFirstPage()
+        }
+    }
 
 
 }

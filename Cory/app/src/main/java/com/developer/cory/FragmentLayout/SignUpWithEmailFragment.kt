@@ -122,7 +122,7 @@ class SignUpWithEmailFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                         saveUserAndAccount()
-                        shareViewModel.updateIsAllowSignUp(true,"email")
+                        shareViewModel.isAllowSignUpWithEmail(true)
                         customDialog.closeDialog()
                         binding.btnRegister.visibility = View.GONE
                     }
